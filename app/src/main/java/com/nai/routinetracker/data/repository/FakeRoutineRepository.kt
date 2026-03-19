@@ -5,23 +5,30 @@ import com.nai.routinetracker.R
 import com.nai.routinetracker.model.RoutineCategory
 import com.nai.routinetracker.model.RoutineDashboardState
 import com.nai.routinetracker.model.RoutineItem
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-class FakeRoutineRepository(
-    context: Context
+class FakeRoutineRepository @Inject constructor(
+    @ApplicationContext context: Context
 ) : RoutineRepository {
     private val appContext = context.applicationContext
 
     private var dashboardState = buildDashboardState()
 
-    override fun getDashboardState(): RoutineDashboardState = dashboardState
-
-    override fun updateRoutines(routines: List<RoutineItem>): RoutineDashboardState {
-        dashboardState = dashboardState.copy(routines = routines)
-        return dashboardState
+    override suspend fun getDashboardState(): RoutineDashboardState = withContext(Dispatchers.IO) {
+        dashboardState
     }
+
+    override suspend fun updateRoutines(routines: List<RoutineItem>): RoutineDashboardState =
+        withContext(Dispatchers.IO) {
+            dashboardState = dashboardState.copy(routines = routines)
+            dashboardState
+        }
 
     private fun buildDashboardState(): RoutineDashboardState {
         return RoutineDashboardState(

@@ -22,16 +22,4 @@ data class RoutineDashboardState(
     val dateLabel: String,
     val highlight: String,
     val routines: List<RoutineItem>
-) {
-    val completedCount: Int
-        get() = routines.count { it.completed }
-
-    val completionRatio: Float
-        get() = if (routines.isEmpty()) 0f else completedCount.toFloat() / routines.size
-
-    val totalStreakDays: Int
-        get() = 15
-
-    val nextRoutine: RoutineItem?
-        get() = routines.firstOrNull { !it.completed }
-}
+)

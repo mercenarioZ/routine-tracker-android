@@ -1,20 +1,22 @@
 package com.nai.routinetracker.ui.home
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nai.routinetracker.R
-import com.nai.routinetracker.model.RoutineDashboardState
 import com.nai.routinetracker.ui.home.components.HeaderSection
 import com.nai.routinetracker.ui.home.components.MetricsRow
 import com.nai.routinetracker.ui.home.components.OverviewCard
@@ -22,13 +24,24 @@ import com.nai.routinetracker.ui.home.components.RoutineCard
 
 @Composable
 fun HomeScreen(
-    state: RoutineDashboardState,
-    onToggleRoutine: (String) -> Unit
+    state: HomeUiState,
+    onToggleRoutine: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Surface(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
+        if (state.isLoading && state.routines.isEmpty()) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+            return@Surface
+        }
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

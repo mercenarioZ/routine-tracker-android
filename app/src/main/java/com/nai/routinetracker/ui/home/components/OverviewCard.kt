@@ -18,10 +18,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nai.routinetracker.R
-import com.nai.routinetracker.model.RoutineDashboardState
+import com.nai.routinetracker.ui.home.HomeUiState
 
 @Composable
-fun OverviewCard(state: RoutineDashboardState) {
+fun OverviewCard(state: HomeUiState) {
     val nextRoutineTitle = state.nextRoutine?.title ?: stringResource(R.string.home_all_done)
 
     Card(

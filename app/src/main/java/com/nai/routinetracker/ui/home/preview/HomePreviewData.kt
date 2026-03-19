@@ -1,11 +1,12 @@
 package com.nai.routinetracker.ui.home.preview
 
 import com.nai.routinetracker.model.RoutineCategory
-import com.nai.routinetracker.model.RoutineDashboardState
 import com.nai.routinetracker.model.RoutineItem
+import com.nai.routinetracker.ui.home.HomeUiState
 
 object HomePreviewData {
-    val dashboardState = RoutineDashboardState(
+    val dashboardState = HomeUiState(
+        isLoading = false,
         userName = "Builder",
         dateLabel = "Thursday, March 18",
         highlight = "Small routines create stable days. Finish the next task before 8:00 AM.",

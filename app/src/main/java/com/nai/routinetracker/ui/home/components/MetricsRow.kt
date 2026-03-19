@@ -15,10 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nai.routinetracker.R
-import com.nai.routinetracker.model.RoutineDashboardState
+import com.nai.routinetracker.ui.home.HomeUiState
 
 @Composable
-fun MetricsRow(state: RoutineDashboardState) {
+fun MetricsRow(state: HomeUiState) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
