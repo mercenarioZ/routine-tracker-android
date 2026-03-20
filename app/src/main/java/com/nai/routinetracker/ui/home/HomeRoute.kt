@@ -21,7 +21,7 @@ fun HomeRoute(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
     LaunchedEffect(viewModel.effects) {
@@ -36,7 +36,7 @@ fun HomeRoute(
                         },
                         effect.routineTitle
                     )
-                    snackbarHostState.showSnackbar(message)
+                    snackBarHostState.showSnackbar(message)
                 }
             }
         }
@@ -44,7 +44,7 @@ fun HomeRoute(
 
     Scaffold(
         snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
+            SnackbarHost(hostState = snackBarHostState)
         }
     ) { innerPadding ->
         HomeScreen(
