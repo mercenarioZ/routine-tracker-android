@@ -30,6 +30,7 @@
     <string name="routine_learning_description">Spend 20 minutes improving one native Android skill.</string>
     <string name="tab_home">Home</string>
     <string name="tab_stats">Stats</string>
+    <string name="tab_routines">Routines</string>
     <string name="tab_settings">Settings</string>
     <string name="stats_screen_title">Stats screen</string>
     <string name="settings_screen_title">Settings screen</string>

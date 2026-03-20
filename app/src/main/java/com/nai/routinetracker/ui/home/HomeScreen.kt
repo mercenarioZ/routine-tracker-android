@@ -15,17 +15,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nai.routinetracker.R
-import com.nai.routinetracker.model.RoutineCategory
-import com.nai.routinetracker.model.RoutineItem
 import com.nai.routinetracker.ui.home.components.HeaderSection
 import com.nai.routinetracker.ui.home.components.MetricsRow
 import com.nai.routinetracker.ui.home.components.OverviewCard
 import com.nai.routinetracker.ui.home.components.RoutineCard
-import com.nai.routinetracker.ui.theme.RoutineTrackerTheme
 
 @Composable
 fun HomeScreen(
@@ -84,42 +79,3 @@ fun HomeScreen(
     }
 }
 
-@Preview(name = "Home", device = Devices.PIXEL_7, showBackground = true, showSystemUi = false)
-@Composable
-private fun HomeScreenPreview() {
-    RoutineTrackerTheme {
-        HomeScreen(
-            state = previewHomeUiState(),
-            onToggleRoutine = {}
-        )
-    }
-}
-
-private fun previewHomeUiState(): HomeUiState {
-    return HomeUiState(
-        isLoading = false,
-        userName = "Builder",
-        dateLabel = "Friday, March 20",
-        highlight = "Small routines create stable days.",
-        routines = listOf(
-            RoutineItem(
-                id = "hydration",
-                title = "Hydrate and stretch",
-                scheduleLabel = "06:30 AM",
-                category = RoutineCategory.Health,
-                streakDays = 12,
-                completed = true,
-                description = "Drink water and stretch for five minutes."
-            ),
-            RoutineItem(
-                id = "planning",
-                title = "Plan top 3 tasks",
-                scheduleLabel = "07:00 AM",
-                category = RoutineCategory.Planning,
-                streakDays = 8,
-                completed = false,
-                description = "Write the three outcomes that must happen today."
-            )
-        )
-    )
-}
