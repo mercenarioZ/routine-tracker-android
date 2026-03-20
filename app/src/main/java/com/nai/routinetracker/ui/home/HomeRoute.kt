@@ -13,7 +13,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nai.routinetracker.R
-import com.nai.routinetracker.ui.home.preview.HomePreviewData
 import com.nai.routinetracker.ui.theme.RoutineTrackerTheme
 import kotlinx.coroutines.flow.collectLatest
 
@@ -56,14 +55,3 @@ fun HomeRoute(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-private fun HomeRoutePreview() {
-    RoutineTrackerTheme {
-        HomeScreen(
-            state = HomePreviewData.dashboardState,
-            onToggleRoutine = {},
-            modifier = Modifier
-        )
-    }
-}
