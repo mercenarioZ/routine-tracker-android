@@ -2,6 +2,7 @@ package com.nai.routinetracker.data.repository
 
 import android.content.Context
 import com.nai.routinetracker.R
+import com.nai.routinetracker.domain.repository.RoutineRepository
 import com.nai.routinetracker.model.RoutineCategory
 import com.nai.routinetracker.model.RoutineDashboardState
 import com.nai.routinetracker.model.RoutineItem
@@ -20,7 +21,7 @@ class FakeRoutineRepository @Inject constructor(
 
     private var dashboardState = buildDashboardState()
 
-    override suspend fun getDashboardState(): RoutineDashboardState = withContext(Dispatchers.IO) {
+    override suspend fun getDashboard(): RoutineDashboardState = withContext(Dispatchers.IO) {
         dashboardState
     }
 

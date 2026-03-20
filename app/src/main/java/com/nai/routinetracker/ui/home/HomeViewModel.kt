@@ -2,7 +2,7 @@ package com.nai.routinetracker.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nai.routinetracker.data.repository.RoutineRepository
+import com.nai.routinetracker.domain.repository.RoutineRepository
 import com.nai.routinetracker.model.RoutineItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -54,7 +54,7 @@ class HomeViewModel @Inject constructor(
 
     private fun loadDashboard() {
         viewModelScope.launch {
-            val dashboardState = repository.getDashboardState()
+            val dashboardState = repository.getDashboard()
             _uiState.value = dashboardState.toUiState()
         }
     }

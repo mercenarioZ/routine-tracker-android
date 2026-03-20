@@ -1,7 +1,7 @@
 package com.nai.routinetracker.di
 
 import com.nai.routinetracker.data.repository.FakeRoutineRepository
-import com.nai.routinetracker.data.repository.RoutineRepository
+import com.nai.routinetracker.domain.repository.RoutineRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
