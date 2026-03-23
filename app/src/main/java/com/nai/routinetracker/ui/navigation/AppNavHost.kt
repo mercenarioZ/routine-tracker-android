@@ -16,56 +16,70 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.nai.routinetracker.ui.home.HomeRoute
+import com.nai.routinetracker.ui.login.LoginRoute
 import com.nai.routinetracker.ui.routines.RoutinesRoute
 import com.nai.routinetracker.ui.settings.SettingsRoute
 import com.nai.routinetracker.ui.stats.StatsRoute
 
 @Composable
-fun AppNavHost(
-    usePreviewHomeContent: Boolean = false
-) {
+fun AppNavHost() {
     val navController = rememberNavController()
     val backStackEntry = navController.currentBackStackEntryAsState().value
     val currentDestination = backStackEntry?.destination
+    val showBottomBar = bottomBarDestinations.any { destination ->
+        currentDestination?.hierarchy?.any { it.route == destination.route } == true
+    }
 
     Scaffold(
         bottomBar = {
-            NavigationBar {
-                bottomBarDestinations.forEach { destination ->
-                    val isSelected = currentDestination
-                        ?.hierarchy
-                        ?.any { it.route == destination.route } == true
+            if (showBottomBar) {
+                NavigationBar {
+                    bottomBarDestinations.forEach { destination ->
+                        val isSelected = currentDestination
+                            ?.hierarchy
+                            ?.any { it.route == destination.route } == true
 
-                    NavigationBarItem(
-                        selected = isSelected,
-                        onClick = {
-                            navController.navigate(destination.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
+                        NavigationBarItem(
+                            selected = isSelected,
+                            onClick = {
+                                navController.navigate(destination.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
+                            },
+                            icon = {
+                                Icon(
+                                    imageVector = destination.icon,
+                                    contentDescription = null
+                                )
+                            },
+                            label = {
+                                Text(text = stringResource(destination.labelRes))
                             }
-                        },
-                        icon = {
-                            Icon(
-                                imageVector = destination.icon,
-                                contentDescription = null
-                            )
-                        },
-                        label = {
-                            Text(text = stringResource(destination.labelRes))
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = AppDestination.Home.route,
+            startDestination = AppDestination.Login.route,
             modifier = Modifier.padding(innerPadding)
         ) {
+            composable(route = AppDestination.Login.route) {
+                LoginRoute(
+                    onLoginSuccess = {
+                        navController.navigate(AppDestination.Home.route) {
+                            popUpTo(AppDestination.Login.route) { inclusive = true }
+                            launchSingleTop = true
+                        }
+                    }
+                )
+            }
             composable(route = AppDestination.Home.route) {
                 HomeRoute()
             }

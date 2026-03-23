@@ -37,6 +37,12 @@ sealed class AppDestination(
         labelRes = R.string.tab_settings,
         icon = Icons.Outlined.Settings
     )
+
+    data object Login : AppDestination(
+        route = "login",
+        labelRes = R.string.app_name,
+        icon = Icons.Outlined.Checklist
+    )
 }
 
 val bottomBarDestinations = listOf(
