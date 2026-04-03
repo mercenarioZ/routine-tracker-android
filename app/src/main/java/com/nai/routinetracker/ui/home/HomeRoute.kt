@@ -9,15 +9,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nai.routinetracker.R
-import com.nai.routinetracker.ui.theme.RoutineTrackerTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun HomeRoute(
+    onLogoutClick: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
@@ -50,8 +49,8 @@ fun HomeRoute(
         HomeScreen(
             state = uiState,
             onToggleRoutine = viewModel::onToggleRoutine,
+            onLogoutClick = onLogoutClick,
             modifier = Modifier.padding(innerPadding)
         )
     }
 }
-

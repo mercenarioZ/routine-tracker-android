@@ -10,6 +10,7 @@
     <string name="home_all_done">Everything is done</string>
     <string name="home_metric_completion">Completion</string>
     <string name="home_metric_streak_days">Streak days</string>
+    <string name="home_logout">Logout</string>
     <string name="routine_action_done">Done</string>
     <string name="routine_action_start">Start</string>
     <string name="category_health">Health</string>

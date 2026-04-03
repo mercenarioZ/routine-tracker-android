@@ -5,5 +5,5 @@ data class LoginUiState(
     val password: String = ""
 ) {
     val canSubmit: Boolean
-        get() = username.isNotBlank() && password.isNotBlank()
+        get() = username == "test@example.com" && password == "password"
 }

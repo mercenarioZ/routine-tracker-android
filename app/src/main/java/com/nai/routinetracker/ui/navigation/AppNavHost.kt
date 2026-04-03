@@ -81,7 +81,14 @@ fun AppNavHost() {
                 )
             }
             composable(route = AppDestination.Home.route) {
-                HomeRoute()
+                HomeRoute(
+                    onLogoutClick = {
+                        navController.navigate(AppDestination.Login.route) {
+                            popUpTo(navController.graph.id) { inclusive = true }
+                            launchSingleTop = true
+                        }
+                    }
+                )
             }
             composable(route = AppDestination.Routines.route) {
                 RoutinesRoute()

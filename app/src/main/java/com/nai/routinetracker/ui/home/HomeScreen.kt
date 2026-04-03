@@ -26,6 +26,7 @@ import com.nai.routinetracker.ui.home.components.RoutineCard
 fun HomeScreen(
     state: HomeUiState,
     onToggleRoutine: (String) -> Unit,
+    onLogoutClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -50,7 +51,10 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                HeaderSection(state = state)
+                HeaderSection(
+                    state = state,
+                    onLogoutClick = onLogoutClick
+                )
             }
 
             item {
@@ -78,4 +82,3 @@ fun HomeScreen(
         }
     }
 }
-
