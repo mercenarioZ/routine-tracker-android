@@ -24,6 +24,7 @@ import com.nai.routinetracker.ui.theme.RoutineTrackerTheme
 fun LoginScreen(
     username: String,
     password: String,
+    errorMessage: String?,
     onUsernameChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     canSubmit: Boolean,
@@ -40,7 +41,7 @@ fun LoginScreen(
             text = "Login",
             style = MaterialTheme.typography.headlineSmall
         )
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(32.dp))
         OutlinedTextField(
             value = username,
             onValueChange = onUsernameChange,
@@ -67,6 +68,13 @@ fun LoginScreen(
         ) {
             Text("Login")
         }
+
+        if (errorMessage != null) {
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.error
+            )
+        }
     }
 }
 
@@ -75,8 +83,9 @@ fun LoginScreen(
 private fun LoginScreenPreview() {
     RoutineTrackerTheme {
         LoginScreen(
-            username = "demo",
+            username = "nai",
             password = "password",
+            errorMessage = null,
             onUsernameChange = {},
             onPasswordChange = {},
             canSubmit = true,

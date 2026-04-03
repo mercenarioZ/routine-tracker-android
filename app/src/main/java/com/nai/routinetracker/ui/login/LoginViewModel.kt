@@ -10,6 +10,9 @@ import kotlinx.coroutines.flow.update
 @HiltViewModel
 class LoginViewModel @Inject constructor() : ViewModel() {
     private val _uiState = MutableStateFlow(LoginUiState())
+
+    private val mockUsername = "test@example.com"
+    private val mockPassword = "password"
     val uiState = _uiState.asStateFlow()
 
     fun onUsernameChange(username: String) {
@@ -18,5 +21,17 @@ class LoginViewModel @Inject constructor() : ViewModel() {
 
     fun onPasswordChange(password: String) {
         _uiState.update { it.copy(password = password) }
+    }
+    fun login(): Boolean {
+        val state = _uiState.value
+        val isValid = state.username == mockUsername && state.password == mockPassword
+
+        _uiState.update {
+            it.copy(
+                errorMessage = if (isValid) null else "Invalid username or password"
+            )
+        }
+
+        return isValid
     }
 }

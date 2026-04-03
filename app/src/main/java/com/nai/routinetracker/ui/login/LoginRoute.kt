@@ -14,11 +14,12 @@ fun LoginRoute(
     LoginScreen(
         username = uiState.username,
         password = uiState.password,
+        errorMessage = uiState.errorMessage,
         onUsernameChange = viewModel::onUsernameChange,
         onPasswordChange = viewModel::onPasswordChange,
         canSubmit = uiState.canSubmit,
         onLoginClick = {
-            if (uiState.canSubmit) {
+            if (viewModel.login()) {
                 onLoginSuccess()
             }
         }
