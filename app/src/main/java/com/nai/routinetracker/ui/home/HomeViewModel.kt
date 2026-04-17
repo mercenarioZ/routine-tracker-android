@@ -3,14 +3,13 @@ package com.nai.routinetracker.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nai.routinetracker.domain.repository.RoutineRepository
-import com.nai.routinetracker.model.RoutineItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -24,49 +23,29 @@ class HomeViewModel @Inject constructor(
     val effects = _effects.asSharedFlow()
 
     init {
-        loadDashboard()
+        observeDashboard()
     }
 
     fun onToggleRoutine(routineId: String) {
-        val currentState = _uiState.value
-        val updatedRoutines = currentState.routines.map { routine ->
-            if (routine.id == routineId) {
-                routine.updatedCompletion()
-            } else {
-                routine
-            }
-        }
-        val updatedRoutine = updatedRoutines.firstOrNull { it.id == routineId } ?: return
-
-        _uiState.update { it.copy(routines = updatedRoutines) }
+        val routine = _uiState.value.routines.firstOrNull { it.id == routineId } ?: return
+        val isCompletedAfterToggle = !routine.completed
 
         viewModelScope.launch {
-            val dashboardState = repository.updateRoutines(updatedRoutines)
-            _uiState.value = dashboardState.toUiState()
+            repository.toggleRoutine(routineId)
             _effects.emit(
                 HomeEffect.ShowRoutineStatusChanged(
-                    routineTitle = updatedRoutine.title,
-                    isCompleted = updatedRoutine.completed
+                    routineTitle = routine.title,
+                    isCompleted = isCompletedAfterToggle
                 )
             )
         }
     }
 
-    private fun loadDashboard() {
+    private fun observeDashboard() {
         viewModelScope.launch {
-            val dashboardState = repository.getDashboard()
-            _uiState.value = dashboardState.toUiState()
+            repository.observeDashboard().collectLatest { dashboardState ->
+                _uiState.value = dashboardState.toUiState()
+            }
         }
     }
-}
-
-private fun RoutineItem.updatedCompletion(): RoutineItem {
-    return copy(
-        completed = !completed,
-        streakDays = if (completed) {
-            (streakDays - 1).coerceAtLeast(0)
-        } else {
-            streakDays + 1
-        }
-    )
 }

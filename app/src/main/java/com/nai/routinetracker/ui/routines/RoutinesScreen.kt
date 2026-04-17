@@ -7,9 +7,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.nai.routinetracker.model.RoutineCategory
 
 @Composable
-fun RoutinesScreen() {
+fun RoutinesScreen(state: RoutinesUiState,
+                   onToggleRoutine: (String) -> Unit,
+                   onCategorySelected: (RoutineCategory?) -> Unit,
+                   onCompletedFilterChanged: (Boolean) -> Unit,
+                   modifier: Modifier = Modifier) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center

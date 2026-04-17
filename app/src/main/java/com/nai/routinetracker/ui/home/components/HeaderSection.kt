@@ -42,11 +42,11 @@ fun HeaderSection(
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
-            Text(
-                text = state.highlight,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+//            Text(
+//                text = state.highlight,
+//                style = MaterialTheme.typography.bodyLarge,
+//                color = MaterialTheme.colorScheme.onSurfaceVariant
+//            ) // quote
         }
 
         IconButton(
@@ -58,5 +58,20 @@ fun HeaderSection(
                 contentDescription = stringResource(R.string.home_logout)
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HeaderSectionPreview() {
+    RoutineTrackerTheme {
+        HeaderSection(
+            state = HomeUiState(
+                userName = "Nai",
+                dateLabel = "Friday, April 17",
+                highlight = "Keep your streak alive today."
+            ),
+            onLogoutClick = {}
+        )
     }
 }

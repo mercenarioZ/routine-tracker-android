@@ -12,23 +12,33 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 
 class FakeRoutineRepository @Inject constructor(
     @ApplicationContext context: Context
 ) : RoutineRepository {
     private val appContext = context.applicationContext
+    private val dashboardState = MutableStateFlow(buildDashboardState())
 
-    private var dashboardState = buildDashboardState()
+    override fun observeDashboard(): Flow<RoutineDashboardState> = dashboardState.asStateFlow()
 
-    override suspend fun getDashboard(): RoutineDashboardState = withContext(Dispatchers.IO) {
-        dashboardState
-    }
-
-    override suspend fun updateRoutines(routines: List<RoutineItem>): RoutineDashboardState =
+    override suspend fun toggleRoutine(routineId: String) =
         withContext(Dispatchers.IO) {
-            dashboardState = dashboardState.copy(routines = routines)
-            dashboardState
+            dashboardState.update { currentDashboard ->
+                currentDashboard.copy(
+                    routines = currentDashboard.routines.map { routine ->
+                        if (routine.id == routineId) {
+                            routine.updatedCompletion()
+                        } else {
+                            routine
+                        }
+                    }
+                )
+            }
         }
 
     private fun buildDashboardState(): RoutineDashboardState {
@@ -81,4 +91,15 @@ class FakeRoutineRepository @Inject constructor(
         val formatter = SimpleDateFormat("EEEE, MMMM d", Locale.getDefault())
         return formatter.format(Date())
     }
+}
+
+private fun RoutineItem.updatedCompletion(): RoutineItem {
+    return copy(
+        completed = !completed,
+        streakDays = if (completed) {
+            (streakDays - 1).coerceAtLeast(0)
+        } else {
+            streakDays + 1
+        }
+    )
 }
