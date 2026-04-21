@@ -12,8 +12,6 @@ fun RoutinesRoute(
 
     RoutinesScreen(
         state = uiState,
-        onToggleRoutine = viewModel::onToggleRoutine,
-        onCategorySelected = viewModel::onCategorySelected,
-        onCompletedFilterChanged = viewModel::onCompletedFilterChanged
+        onCategorySelected = viewModel::onCategorySelected
     )
 }

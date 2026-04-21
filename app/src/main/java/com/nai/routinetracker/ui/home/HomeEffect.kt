@@ -1,10 +1,10 @@
 package com.nai.routinetracker.ui.home
 
-import com.nai.routinetracker.model.RoutineStatus
+import com.nai.routinetracker.model.TaskStatus
 
 sealed interface HomeEffect {
-    data class ShowRoutineStatusChanged(
-        val routineTitle: String,
-        val newStatus: RoutineStatus
+    data class ShowTaskStatusChanged(
+        val taskTitle: String,
+        val newStatus: TaskStatus
     ) : HomeEffect
 }

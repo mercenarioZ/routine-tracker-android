@@ -2,6 +2,7 @@ package com.nai.routinetracker.ui.navigation
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Autorenew
 import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.Checklist
 import androidx.compose.material.icons.outlined.Home
@@ -23,6 +24,12 @@ sealed class AppDestination(
     data object Routines : AppDestination(
         route = "routines",
         labelRes = R.string.tab_routines,
+        icon = Icons.Outlined.Autorenew
+    )
+
+    data object Tasks : AppDestination(
+        route = "tasks",
+        labelRes = R.string.tab_tasks,
         icon = Icons.Outlined.Checklist
     )
 
@@ -48,6 +55,7 @@ sealed class AppDestination(
 val bottomBarDestinations = listOf(
     AppDestination.Home,
     AppDestination.Routines,
+    AppDestination.Tasks,
     AppDestination.Stats,
     AppDestination.Settings
 )

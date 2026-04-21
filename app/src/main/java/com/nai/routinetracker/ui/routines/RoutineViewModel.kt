@@ -23,20 +23,10 @@ class RoutineViewModel @Inject constructor(
         observeDashboard()
     }
 
-    fun onToggleRoutine(routineId: String) {
-        viewModelScope.launch {
-            repository.toggleRoutine(routineId)
-        }
-    }
-
     fun onCategorySelected(category: RoutineCategory?) {
         _uiState.update {
             it.copy(selectedCategory = category)
         }
-    }
-
-    fun onCompletedFilterChanged(showCompletedOnly: Boolean) {
-        _uiState.update { it.copy(showCompletedOnly = showCompletedOnly) }
     }
 
     private fun observeDashboard() {

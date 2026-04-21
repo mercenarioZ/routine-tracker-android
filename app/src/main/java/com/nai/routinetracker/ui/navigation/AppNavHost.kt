@@ -20,6 +20,7 @@ import com.nai.routinetracker.ui.login.LoginRoute
 import com.nai.routinetracker.ui.routines.RoutinesRoute
 import com.nai.routinetracker.ui.settings.SettingsRoute
 import com.nai.routinetracker.ui.stats.StatsRoute
+import com.nai.routinetracker.ui.tasks.TasksRoute
 
 @Composable
 fun AppNavHost() {
@@ -67,7 +68,7 @@ fun AppNavHost() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = AppDestination.Login.route,
+            startDestination = AppDestination.Home.route,
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(route = AppDestination.Login.route) {
@@ -92,6 +93,9 @@ fun AppNavHost() {
             }
             composable(route = AppDestination.Routines.route) {
                 RoutinesRoute()
+            }
+            composable(route = AppDestination.Tasks.route) {
+                TasksRoute()
             }
             composable(route = AppDestination.Stats.route) {
                 StatsRoute()
