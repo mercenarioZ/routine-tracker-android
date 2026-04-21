@@ -3,6 +3,7 @@ package com.nai.routinetracker.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nai.routinetracker.domain.repository.RoutineRepository
+import com.nai.routinetracker.domain.repository.TaskRepository
 import com.nai.routinetracker.model.next
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -11,11 +12,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: RoutineRepository
+    private val routineRepository: RoutineRepository,
+    private val taskRepository: TaskRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState(isLoading = true))
     val uiState = _uiState.asStateFlow()
@@ -24,28 +27,44 @@ class HomeViewModel @Inject constructor(
     val effects = _effects.asSharedFlow()
 
     init {
-        observeDashboard()
+        observeRoutineDashboard()
+        observeTasks()
     }
 
-    fun onToggleRoutine(routineId: String) {
-        val routine = _uiState.value.routines.firstOrNull { it.id == routineId } ?: return
-        val newStatus = routine.status.next()
+    fun onToggleTask(taskId: String) {
+        val task = _uiState.value.tasks.firstOrNull { it.id == taskId } ?: return
+        val newStatus = task.status.next()
 
         viewModelScope.launch {
-            repository.toggleRoutine(routineId)
+            taskRepository.toggleTask(taskId)
             _effects.emit(
-                HomeEffect.ShowRoutineStatusChanged(
-                    routineTitle = routine.title,
+                HomeEffect.ShowTaskStatusChanged(
+                    taskTitle = task.title,
                     newStatus = newStatus
                 )
             )
         }
     }
 
-    private fun observeDashboard() {
+    private fun observeRoutineDashboard() {
         viewModelScope.launch {
-            repository.observeDashboard().collectLatest { dashboardState ->
-                _uiState.value = dashboardState.toUiState()
+            routineRepository.observeDashboard().collectLatest { dashboardState ->
+                _uiState.update { currentState ->
+                    dashboardState.toUiState().copy(tasks = currentState.tasks)
+                }
+            }
+        }
+    }
+
+    private fun observeTasks() {
+        viewModelScope.launch {
+            taskRepository.observeTasks().collectLatest { tasks ->
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        tasks = tasks
+                    )
+                }
             }
         }
     }

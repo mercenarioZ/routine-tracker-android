@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
@@ -21,13 +20,12 @@ import com.nai.routinetracker.R
 import com.nai.routinetracker.ui.home.components.HeaderSection
 import com.nai.routinetracker.ui.home.components.MetricsRow
 import com.nai.routinetracker.ui.home.components.OverviewCard
-import com.nai.routinetracker.ui.home.components.RoutineCard
+import com.nai.routinetracker.ui.tasks.components.TaskCard
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     state: HomeUiState,
-    onToggleRoutine: (String) -> Unit,
+    onToggleTask: (String) -> Unit,
     onLogoutClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -35,7 +33,7 @@ fun HomeScreen(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        if (state.isLoading && state.routines.isEmpty()) {
+        if (state.isLoading && state.tasks.isEmpty()) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -75,11 +73,10 @@ fun HomeScreen(
                 )
             }
 
-            items(state.orderedRoutines, key = { it.id }) { routine ->
-                RoutineCard(
-                    routine = routine,
-                    onToggleRoutine = onToggleRoutine,
-//                    modifier = Modifier.animateItemPlacement()
+            items(state.orderedTasks, key = { it.id }) { task ->
+                TaskCard(
+                    task = task,
+                    onToggleTask = onToggleTask
                 )
             }
         }

@@ -22,7 +22,7 @@ import com.nai.routinetracker.ui.home.HomeUiState
 
 @Composable
 fun OverviewCard(state: HomeUiState) {
-    val nextRoutineTitle = state.nextRoutine?.title ?: stringResource(R.string.home_all_done)
+    val nextTaskTitle = state.nextTask?.title ?: stringResource(R.string.home_all_done)
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -44,7 +44,7 @@ fun OverviewCard(state: HomeUiState) {
                 text = stringResource(
                     R.string.home_completion_label,
                     state.completedCount,
-                    state.routines.size
+                    state.tasks.size
                 ),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
@@ -59,7 +59,7 @@ fun OverviewCard(state: HomeUiState) {
                 trackColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)
             )
             Text(
-                text = stringResource(R.string.home_next_up, nextRoutineTitle),
+                text = stringResource(R.string.home_next_up, nextTaskTitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )

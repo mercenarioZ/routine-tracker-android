@@ -12,7 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nai.routinetracker.R
-import com.nai.routinetracker.model.RoutineStatus
+import com.nai.routinetracker.model.TaskStatus
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -27,14 +27,14 @@ fun HomeRoute(
     LaunchedEffect(viewModel.effects) {
         viewModel.effects.collectLatest { effect ->
             when (effect) {
-                is HomeEffect.ShowRoutineStatusChanged -> {
+                is HomeEffect.ShowTaskStatusChanged -> {
                     val message = context.getString(
                         when (effect.newStatus) {
-                            RoutineStatus.Pending -> R.string.home_routine_marked_pending
-                            RoutineStatus.InProgress -> R.string.home_routine_marked_in_progress
-                            RoutineStatus.Done -> R.string.home_routine_marked_done
+                            TaskStatus.Pending -> R.string.home_task_marked_pending
+                            TaskStatus.InProgress -> R.string.home_task_marked_in_progress
+                            TaskStatus.Done -> R.string.home_task_marked_done
                         },
-                        effect.routineTitle
+                        effect.taskTitle
                     )
                     snackBarHostState.showSnackbar(message)
                 }
@@ -49,7 +49,7 @@ fun HomeRoute(
     ) { innerPadding ->
         HomeScreen(
             state = uiState,
-            onToggleRoutine = viewModel::onToggleRoutine,
+            onToggleTask = viewModel::onToggleTask,
             onLogoutClick = onLogoutClick,
             modifier = Modifier.padding(innerPadding)
         )

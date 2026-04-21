@@ -5,6 +5,4 @@ import kotlinx.coroutines.flow.Flow
 
 interface RoutineRepository {
     fun observeDashboard(): Flow<RoutineDashboardState>
-
-    suspend fun toggleRoutine(routineId: String)
 }

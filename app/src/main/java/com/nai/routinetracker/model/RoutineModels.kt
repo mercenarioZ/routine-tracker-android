@@ -30,19 +30,13 @@ object RoutineCategories {
     val defaults = listOf(Health, Focus, Learning, Planning)
 }
 
-enum class RoutineStatus {
-    Pending,
-    InProgress,
-    Done
-}
-
 data class RoutineItem(
     val id: String,
     val title: String,
     val scheduleLabel: String,
     val category: RoutineCategory,
     val streakDays: Int,
-    val status: RoutineStatus,
+    val isActive: Boolean = true,
     val description: String
 )
 
@@ -52,14 +46,3 @@ data class RoutineDashboardState(
     val highlight: String,
     val routines: List<RoutineItem>
 )
-
-val RoutineItem.isDone: Boolean
-    get() = status == RoutineStatus.Done
-
-fun RoutineStatus.next(): RoutineStatus {
-    return when (this) {
-        RoutineStatus.Pending -> RoutineStatus.InProgress
-        RoutineStatus.InProgress -> RoutineStatus.Done
-        RoutineStatus.Done -> RoutineStatus.Pending
-    }
-}

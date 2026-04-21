@@ -1,4 +1,4 @@
-package com.nai.routinetracker.ui.routines
+package com.nai.routinetracker.ui.tasks
 
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -23,20 +23,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nai.routinetracker.R
-import com.nai.routinetracker.model.RoutineCategory
-import com.nai.routinetracker.ui.home.components.RoutineCard
+import com.nai.routinetracker.model.TaskCategory
+import com.nai.routinetracker.ui.tasks.components.TaskCard
 
 @Composable
-fun RoutinesScreen(
-    state: RoutinesUiState,
-    onCategorySelected: (RoutineCategory?) -> Unit,
+fun TasksScreen(
+    state: TasksUiState,
+    onToggleTask: (String) -> Unit,
+    onCategorySelected: (TaskCategory?) -> Unit,
+    onCompletedFilterChanged: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        if (state.isLoading && state.routines.isEmpty()) {
+        if (state.isLoading && state.tasks.isEmpty()) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -56,12 +58,12 @@ fun RoutinesScreen(
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(
-                        text = stringResource(R.string.routines_screen_title),
+                        text = stringResource(R.string.tasks_screen_title),
                         style = MaterialTheme.typography.headlineMedium,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
-                        text = stringResource(R.string.routines_screen_subtitle),
+                        text = stringResource(R.string.tasks_screen_subtitle),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -69,21 +71,31 @@ fun RoutinesScreen(
             }
 
             item {
-                CategoryFilters(
-                    categories = state.categories,
-                    selectedCategory = state.selectedCategory,
-                    onCategorySelected = onCategorySelected
-                )
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    CategoryFilters(
+                        categories = state.categories,
+                        selectedCategory = state.selectedCategory,
+                        onCategorySelected = onCategorySelected
+                    )
+                    FilterChip(
+                        selected = state.showCompletedOnly,
+                        onClick = { onCompletedFilterChanged(!state.showCompletedOnly) },
+                        label = {
+                            Text(text = stringResource(R.string.tasks_filter_done_only))
+                        }
+                    )
+                }
             }
 
-            if (state.visibleRoutines.isEmpty()) {
+            if (state.visibleTasks.isEmpty()) {
                 item {
                     EmptyState()
                 }
             } else {
-                items(state.visibleRoutines, key = { it.id }) { routine ->
-                    RoutineCard(
-                        routine = routine
+                items(state.visibleTasks, key = { it.id }) { task ->
+                    TaskCard(
+                        task = task,
+                        onToggleTask = onToggleTask
                     )
                 }
             }
@@ -93,9 +105,9 @@ fun RoutinesScreen(
 
 @Composable
 private fun CategoryFilters(
-    categories: List<RoutineCategory>,
-    selectedCategory: RoutineCategory?,
-    onCategorySelected: (RoutineCategory?) -> Unit
+    categories: List<TaskCategory>,
+    selectedCategory: TaskCategory?,
+    onCategorySelected: (TaskCategory?) -> Unit
 ) {
     androidx.compose.foundation.layout.Row(
         modifier = Modifier
@@ -106,7 +118,7 @@ private fun CategoryFilters(
         FilterChip(
             selected = selectedCategory == null,
             onClick = { onCategorySelected(null) },
-            label = { Text(text = stringResource(R.string.routines_filter_all)) }
+            label = { Text(text = stringResource(R.string.tasks_filter_all)) }
         )
         categories.forEach { category ->
             FilterChip(
@@ -127,7 +139,7 @@ private fun EmptyState() {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = stringResource(R.string.routines_empty_state),
+            text = stringResource(R.string.tasks_empty_state),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
