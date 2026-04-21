@@ -3,9 +3,12 @@ package com.nai.routinetracker.data.repository
 import android.content.Context
 import com.nai.routinetracker.R
 import com.nai.routinetracker.domain.repository.RoutineRepository
-import com.nai.routinetracker.model.RoutineCategory
+import com.nai.routinetracker.model.RoutineCategories
 import com.nai.routinetracker.model.RoutineDashboardState
 import com.nai.routinetracker.model.RoutineItem
+import com.nai.routinetracker.model.RoutineStatus
+import com.nai.routinetracker.model.isDone
+import com.nai.routinetracker.model.next
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -51,36 +54,36 @@ class FakeRoutineRepository @Inject constructor(
                     id = "hydration",
                     title = appContext.getString(R.string.routine_hydration_title),
                     scheduleLabel = appContext.getString(R.string.routine_hydration_schedule),
-                    category = RoutineCategory.Health,
+                    category = RoutineCategories.Health,
                     streakDays = 12,
-                    completed = true,
+                    status = RoutineStatus.Done,
                     description = appContext.getString(R.string.routine_hydration_description)
                 ),
                 RoutineItem(
                     id = "planning",
                     title = appContext.getString(R.string.routine_planning_title),
                     scheduleLabel = appContext.getString(R.string.routine_planning_schedule),
-                    category = RoutineCategory.Planning,
+                    category = RoutineCategories.Planning,
                     streakDays = 8,
-                    completed = false,
+                    status = RoutineStatus.InProgress,
                     description = appContext.getString(R.string.routine_planning_description)
                 ),
                 RoutineItem(
                     id = "focus",
                     title = appContext.getString(R.string.routine_focus_title),
                     scheduleLabel = appContext.getString(R.string.routine_focus_schedule),
-                    category = RoutineCategory.Focus,
+                    category = RoutineCategories.Focus,
                     streakDays = 15,
-                    completed = true,
+                    status = RoutineStatus.Pending,
                     description = appContext.getString(R.string.routine_focus_description)
                 ),
                 RoutineItem(
                     id = "learning",
                     title = appContext.getString(R.string.routine_learning_title),
                     scheduleLabel = appContext.getString(R.string.routine_learning_schedule),
-                    category = RoutineCategory.Learning,
+                    category = RoutineCategories.Learning,
                     streakDays = 5,
-                    completed = false,
+                    status = RoutineStatus.Done,
                     description = appContext.getString(R.string.routine_learning_description)
                 )
             )
@@ -94,12 +97,14 @@ class FakeRoutineRepository @Inject constructor(
 }
 
 private fun RoutineItem.updatedCompletion(): RoutineItem {
+    val nextStatus = status.next()
+
     return copy(
-        completed = !completed,
-        streakDays = if (completed) {
-            (streakDays - 1).coerceAtLeast(0)
-        } else {
-            streakDays + 1
+        status = nextStatus,
+        streakDays = when {
+            !isDone && nextStatus == RoutineStatus.Done -> streakDays + 1
+            isDone && nextStatus != RoutineStatus.Done -> (streakDays - 1).coerceAtLeast(0)
+            else -> streakDays
         }
     )
 }

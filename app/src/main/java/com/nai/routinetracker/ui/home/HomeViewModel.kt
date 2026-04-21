@@ -3,6 +3,7 @@ package com.nai.routinetracker.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nai.routinetracker.domain.repository.RoutineRepository
+import com.nai.routinetracker.model.next
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -28,14 +29,14 @@ class HomeViewModel @Inject constructor(
 
     fun onToggleRoutine(routineId: String) {
         val routine = _uiState.value.routines.firstOrNull { it.id == routineId } ?: return
-        val isCompletedAfterToggle = !routine.completed
+        val newStatus = routine.status.next()
 
         viewModelScope.launch {
             repository.toggleRoutine(routineId)
             _effects.emit(
                 HomeEffect.ShowRoutineStatusChanged(
                     routineTitle = routine.title,
-                    isCompleted = isCompletedAfterToggle
+                    newStatus = newStatus
                 )
             )
         }

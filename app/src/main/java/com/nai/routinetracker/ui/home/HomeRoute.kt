@@ -12,6 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nai.routinetracker.R
+import com.nai.routinetracker.model.RoutineStatus
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -28,10 +29,10 @@ fun HomeRoute(
             when (effect) {
                 is HomeEffect.ShowRoutineStatusChanged -> {
                     val message = context.getString(
-                        if (effect.isCompleted) {
-                            R.string.home_routine_marked_done
-                        } else {
-                            R.string.home_routine_marked_pending
+                        when (effect.newStatus) {
+                            RoutineStatus.Pending -> R.string.home_routine_marked_pending
+                            RoutineStatus.InProgress -> R.string.home_routine_marked_in_progress
+                            RoutineStatus.Done -> R.string.home_routine_marked_done
                         },
                         effect.routineTitle
                     )

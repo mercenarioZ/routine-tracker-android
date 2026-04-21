@@ -2,6 +2,7 @@ package com.nai.routinetracker.ui.home
 
 import com.nai.routinetracker.model.RoutineDashboardState
 import com.nai.routinetracker.model.RoutineItem
+import com.nai.routinetracker.model.isDone
 
 data class HomeUiState(
     val isLoading: Boolean = false,
@@ -11,7 +12,7 @@ data class HomeUiState(
     val routines: List<RoutineItem> = emptyList()
 ) {
     val completedCount: Int
-        get() = routines.count { it.completed }
+        get() = routines.count { it.isDone }
 
     val completionRatio: Float
         get() = if (routines.isEmpty()) 0f else completedCount.toFloat() / routines.size
@@ -19,8 +20,11 @@ data class HomeUiState(
     val totalStreakDays: Int
         get() = routines.sumOf { it.streakDays }
 
+    val orderedRoutines: List<RoutineItem>
+        get() = routines.sortedBy { if (it.isDone) 1 else 0 }
+
     val nextRoutine: RoutineItem?
-        get() = routines.firstOrNull { !it.completed }
+        get() = routines.firstOrNull { !it.isDone }
 }
 
 fun RoutineDashboardState.toUiState(): HomeUiState {

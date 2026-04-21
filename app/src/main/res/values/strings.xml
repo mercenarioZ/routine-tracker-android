@@ -11,8 +11,10 @@
     <string name="home_metric_completion">Completion</string>
     <string name="home_metric_streak_days">Streak days</string>
     <string name="home_logout">Logout</string>
-    <string name="routine_action_done">Done</string>
-    <string name="routine_action_start">Start</string>
+    <string name="routine_status_pending">Pending</string>
+    <string name="routine_status_in_progress">In progress</string>
+    <string name="routine_status_done">Done</string>
+    <string name="routine_in_progress_hint">In progress now</string>
     <string name="category_health">Health</string>
     <string name="category_focus">Focus</string>
     <string name="category_learning">Learning</string>
@@ -36,6 +38,7 @@
     <string name="stats_screen_title">Stats screen</string>
     <string name="settings_screen_title">Settings screen</string>
     <string name="home_routine_marked_done">%1$s marked done.</string>
+    <string name="home_routine_marked_in_progress">%1$s is now in progress.</string>
     <string name="home_routine_marked_pending">%1$s moved back to pending.</string>
     <plurals name="routine_streak_days">
         <item quantity="one">%d day streak</item>
