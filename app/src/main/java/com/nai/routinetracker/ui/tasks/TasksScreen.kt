@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -95,7 +96,8 @@ fun TasksScreen(
                 items(state.visibleTasks, key = { it.id }) { task ->
                     TaskCard(
                         task = task,
-                        onToggleTask = onToggleTask
+                        onToggleTask = onToggleTask,
+                        modifier = Modifier.animateItem()
                     )
                 }
             }
@@ -109,7 +111,7 @@ private fun CategoryFilters(
     selectedCategory: TaskCategory?,
     onCategorySelected: (TaskCategory?) -> Unit
 ) {
-    androidx.compose.foundation.layout.Row(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .horizontalScroll(rememberScrollState()),

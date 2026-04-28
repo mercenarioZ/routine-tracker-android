@@ -76,7 +76,8 @@ fun HomeScreen(
             items(state.orderedTasks, key = { it.id }) { task ->
                 TaskCard(
                     task = task,
-                    onToggleTask = onToggleTask
+                    onToggleTask = onToggleTask,
+                    modifier = Modifier.animateItem()
                 )
             }
         }

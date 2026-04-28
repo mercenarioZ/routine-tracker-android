@@ -1,8 +1,16 @@
 package com.nai.routinetracker.ui.tasks.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.font.FontWeight
@@ -52,6 +61,21 @@ fun TaskCard(
         label = "taskCardContainer"
     )
 
+    val contentAlpha by animateFloatAsState(
+        targetValue = if (task.isDone) 0.72f else 1f,
+        animationSpec = tween(durationMillis = 180),
+        label = "taskCardContentAlpha"
+    )
+
+    val cardScale by animateFloatAsState(
+        targetValue = if (task.isDone) 0.95f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessMediumLow
+        ),
+        label = "taskCardScale"
+    )
+
     val checkboxState = when (task.status) {
         TaskStatus.Pending -> ToggleableState.Off
         TaskStatus.InProgress -> ToggleableState.Indeterminate
@@ -61,6 +85,10 @@ fun TaskCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
+            .graphicsLayer {
+                scaleX = cardScale
+                scaleY = cardScale
+            }
             .animateContentSize(),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = containerColor)
@@ -81,12 +109,12 @@ fun TaskCard(
                     Text(
                         text = "${task.dueLabel} • ${task.timeLabel}",
                         style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = contentAlpha)
                     )
                     Text(
                         text = task.title,
                         style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha),
                         textDecoration = if (task.isDone) {
                             TextDecoration.LineThrough
                         } else {
@@ -97,7 +125,7 @@ fun TaskCard(
                         text = task.description,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                            alpha = if (task.isDone) 0.7f else 1f
+                            alpha = contentAlpha
                         ),
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
@@ -117,12 +145,20 @@ fun TaskCard(
                     Text(
                         text = task.status.label(),
                         style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha)
                     )
                 }
             }
 
-            if (task.status == TaskStatus.InProgress) {
+            AnimatedVisibility(
+                visible = task.status == TaskStatus.InProgress,
+                enter = fadeIn(tween(durationMillis = 140)) + expandVertically(
+                    animationSpec = spring(stiffness = Spring.StiffnessMediumLow)
+                ),
+                exit = fadeOut(tween(durationMillis = 100)) + shrinkVertically(
+                    animationSpec = spring(stiffness = Spring.StiffnessMedium)
+                )
+            ) {
                 Text(
                     text = stringResource(R.string.task_in_progress_hint),
                     style = MaterialTheme.typography.bodySmall,
