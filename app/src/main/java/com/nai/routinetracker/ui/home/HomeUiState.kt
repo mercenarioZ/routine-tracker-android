@@ -9,7 +9,7 @@ data class HomeUiState(
     val isLoading: Boolean = false,
     val userName: String = "",
     val dateLabel: String = "",
-    val highlight: String = "",
+    val highlight: String? = "",
     val routines: List<RoutineItem> = emptyList(),
     val tasks: List<TaskItem> = emptyList()
 ) {
