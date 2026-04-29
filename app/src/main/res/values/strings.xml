@@ -6,8 +6,6 @@
     <string name="home_welcome_back">Welcome back, %1$s</string>
     <string name="home_daily_progress">Daily progress</string>
     <string name="home_completion_label">%1$d/%2$d completed</string>
-    <string name="home_next_up">Next up: %1$s</string>
-    <string name="home_all_done">Everything is done</string>
     <string name="home_metric_completion">Completion</string>
     <string name="home_metric_streak_days">Streak days</string>
     <string name="home_logout">Logout</string>

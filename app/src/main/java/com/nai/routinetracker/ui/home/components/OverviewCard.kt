@@ -22,8 +22,6 @@ import com.nai.routinetracker.ui.home.HomeUiState
 
 @Composable
 fun OverviewCard(state: HomeUiState) {
-    val nextTaskTitle = state.nextTask?.title ?: stringResource(R.string.home_all_done)
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(28.dp),
@@ -57,11 +55,6 @@ fun OverviewCard(state: HomeUiState) {
                     .clip(CircleShape),
                 color = MaterialTheme.colorScheme.primary,
                 trackColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)
-            )
-            Text(
-                text = stringResource(R.string.home_next_up, nextTaskTitle),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
     }
