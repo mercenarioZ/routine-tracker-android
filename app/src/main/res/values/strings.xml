@@ -2,7 +2,7 @@
     <string name="app_name">Routine Tracker</string>
     <string name="sample_user_name">Builder</string>
     <string name="home_highlight">Small routines create stable days. Finish the next task before 8:00 AM.</string>
-    <string name="home_routines_title">Today\'s tasks</string>
+    <string name="home_routines_title">Tasks for today, let\'s go</string>
     <string name="home_welcome_back">Welcome back, %1$s</string>
     <string name="home_daily_progress">Daily progress</string>
     <string name="home_completion_label">%1$d/%2$d completed</string>
@@ -38,6 +38,15 @@
     <string name="routines_screen_subtitle">Track recurring habits and keep the routine flow visible.</string>
     <string name="routines_filter_all">All categories</string>
     <string name="routines_empty_state">No routines match this filter yet.</string>
+    <string name="create_routine_title">Create a routine</string>
+    <string name="create_routine_subtitle">Set up a repeatable action with a clear time and category.</string>
+    <string name="create_routine_back">Back</string>
+    <string name="create_routine_name_label">Routine name</string>
+    <string name="create_routine_time_label">Time</string>
+    <string name="create_routine_time_placeholder">06:30 AM</string>
+    <string name="create_routine_category_label">Category</string>
+    <string name="create_routine_description_label">Description</string>
+    <string name="create_routine_save">Save routine</string>
     <string name="tasks_screen_title">Tasks</string>
     <string name="tasks_screen_subtitle">Work through one-off tasks without mixing them into your routine data.</string>
     <string name="tasks_filter_all">All categories</string>

@@ -17,6 +17,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.nai.routinetracker.ui.home.HomeRoute
 import com.nai.routinetracker.ui.login.LoginRoute
+import com.nai.routinetracker.ui.routines.CreateRoutineRoute
 import com.nai.routinetracker.ui.routines.RoutinesRoute
 import com.nai.routinetracker.ui.settings.SettingsRoute
 import com.nai.routinetracker.ui.stats.StatsRoute
@@ -92,7 +93,21 @@ fun AppNavHost() {
                 )
             }
             composable(route = AppDestination.Routines.route) {
-                RoutinesRoute()
+                RoutinesRoute(
+                    onCreateRoutineClick = {
+                        navController.navigate(AppDestination.CreateRoutine.route)
+                    }
+                )
+            }
+            composable(route = AppDestination.CreateRoutine.route) {
+                CreateRoutineRoute(
+                    onRoutineCreated = {
+                        navController.popBackStack()
+                    },
+                    onBackClick = {
+                        navController.popBackStack()
+                    }
+                )
             }
             composable(route = AppDestination.Tasks.route) {
                 TasksRoute()
