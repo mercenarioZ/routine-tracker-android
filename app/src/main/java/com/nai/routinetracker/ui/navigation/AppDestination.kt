@@ -27,6 +27,12 @@ sealed class AppDestination(
         icon = Icons.Outlined.Autorenew
     )
 
+    data object CreateRoutine : AppDestination(
+        route = "create-routine",
+        labelRes = R.string.create_routine_title,
+        icon = Icons.Outlined.Autorenew
+    )
+
     data object Tasks : AppDestination(
         route = "tasks",
         labelRes = R.string.tab_tasks,

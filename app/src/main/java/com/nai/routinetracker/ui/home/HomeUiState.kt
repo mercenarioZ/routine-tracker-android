@@ -20,7 +20,7 @@ data class HomeUiState(
         get() = if (tasks.isEmpty()) 0f else completedCount.toFloat() / tasks.size
 
     val totalStreakDays: Int
-        get() = routines.sumOf { it.streakDays }
+        get() = 10
 
     val orderedTasks: List<TaskItem>
         get() = tasks.sortedBy { if (it.isDone) 1 else 0 }

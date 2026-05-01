@@ -6,12 +6,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun RoutinesRoute(
+    onCreateRoutineClick: () -> Unit,
     viewModel: RoutineViewModel = hiltViewModel()
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
 
     RoutinesScreen(
         state = uiState,
-        onCategorySelected = viewModel::onCategorySelected
+        onCategorySelected = viewModel::onCategorySelected,
+        onCreateRoutineClick = onCreateRoutineClick
     )
 }

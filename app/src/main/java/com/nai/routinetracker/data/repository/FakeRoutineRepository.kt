@@ -4,6 +4,7 @@ import android.content.Context
 import com.nai.routinetracker.R
 import com.nai.routinetracker.domain.repository.RoutineRepository
 import com.nai.routinetracker.model.RoutineDashboardState
+import com.nai.routinetracker.model.RoutineItem
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -12,6 +13,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class FakeRoutineRepository @Inject constructor(
     @ApplicationContext context: Context
@@ -20,6 +22,15 @@ class FakeRoutineRepository @Inject constructor(
     private val dashboardState = MutableStateFlow(buildDashboardState())
 
     override fun observeDashboard(): Flow<RoutineDashboardState> = dashboardState.asStateFlow()
+
+    override suspend fun createRoutine(routine: RoutineItem) {
+//        dashboardState.value = dashboardState.value.copy(
+//            routines = dashboardState.value.routines + routine
+//        )
+        dashboardState.update { state ->
+            state.copy(routines = state.routines + routine)
+        }
+    }
 
     private fun buildDashboardState(): RoutineDashboardState {
         return RoutineDashboardState(

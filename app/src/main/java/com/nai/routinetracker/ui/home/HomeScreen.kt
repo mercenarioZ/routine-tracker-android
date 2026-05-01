@@ -53,7 +53,7 @@ fun HomeScreen(
                 .fillMaxSize()
                 .statusBarsPadding(),
             contentPadding = PaddingValues(20.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             item {
                 HeaderSection(
