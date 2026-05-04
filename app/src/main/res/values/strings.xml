@@ -44,6 +44,8 @@
     <string name="create_routine_name_label">Routine name</string>
     <string name="create_routine_time_label">Time</string>
     <string name="create_routine_time_placeholder">06:30 AM</string>
+    <string name="create_routine_time_confirm">OK</string>
+    <string name="create_routine_time_cancel">Cancel</string>
     <string name="create_routine_category_label">Category</string>
     <string name="create_routine_description_label">Description</string>
     <string name="create_routine_save">Save routine</string>
