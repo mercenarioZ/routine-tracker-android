@@ -58,9 +58,10 @@ fun CreateRoutineScreen(
     modifier: Modifier = Modifier
 ) {
     var isTimePickerOpen by remember { mutableStateOf(false) }
+    val initialTime = parseTimeLabel(state.scheduleLabel)
     val timePickerState = rememberTimePickerState(
-        initialHour = 6,
-        initialMinute = 30,
+        initialHour = initialTime.hour,
+        initialMinute = initialTime.minute,
         is24Hour = false
     )
 
@@ -112,7 +113,12 @@ fun CreateRoutineScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 OutlinedButton(
-                    onClick = { isTimePickerOpen = true },
+                    onClick = {
+                        val selectedTime = parseTimeLabel(state.scheduleLabel)
+                        timePickerState.hour = selectedTime.hour
+                        timePickerState.minute = selectedTime.minute
+                        isTimePickerOpen = true
+                    },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Icon(
@@ -201,6 +207,28 @@ fun CreateRoutineScreen(
     }
 }
 
+private data class TimeSelection(
+    val hour: Int,
+    val minute: Int
+)
+
+private fun parseTimeLabel(scheduleLabel: String): TimeSelection {
+    val match = TIME_LABEL_REGEX.matchEntire(scheduleLabel.trim())
+        ?: return TimeSelection(hour = 6, minute = 30)
+    val displayHour = match.groupValues[1].toInt()
+    val minute = match.groupValues[2].toInt()
+    if (displayHour !in 1..12 || minute !in 0..59) {
+        return TimeSelection(hour = 6, minute = 30)
+    }
+    val period = match.groupValues[3].uppercase(Locale.US)
+    val hour = when {
+        period == "AM" && displayHour == 12 -> 0
+        period == "PM" && displayHour != 12 -> displayHour + 12
+        else -> displayHour
+    }
+    return TimeSelection(hour = hour, minute = minute)
+}
+
 private fun formatTimeLabel(hour: Int, minute: Int): String {
     val displayHour = when {
         hour == 0 -> 12
@@ -210,6 +238,8 @@ private fun formatTimeLabel(hour: Int, minute: Int): String {
     val period = if (hour < 12) "AM" else "PM"
     return String.format(Locale.US, "%02d:%02d %s", displayHour, minute, period)
 }
+
+private val TIME_LABEL_REGEX = Regex("""(\d{1,2}):(\d{2})\s*([AP]M)""", RegexOption.IGNORE_CASE)
 
 @Preview(showBackground = true, widthDp = 390, heightDp = 844)
 @Composable
