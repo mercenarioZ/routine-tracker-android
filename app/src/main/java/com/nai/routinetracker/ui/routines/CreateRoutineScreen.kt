@@ -31,10 +31,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -57,8 +55,9 @@ fun CreateRoutineScreen(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var isTimePickerOpen by remember { mutableStateOf(false) }
+    val isTimePickerOpen = remember { mutableStateOf(false) }
     val initialTime = parseTimeLabel(state.scheduleLabel)
+
     val timePickerState = rememberTimePickerState(
         initialHour = initialTime.hour,
         initialMinute = initialTime.minute,
@@ -117,7 +116,7 @@ fun CreateRoutineScreen(
                         val selectedTime = parseTimeLabel(state.scheduleLabel)
                         timePickerState.hour = selectedTime.hour
                         timePickerState.minute = selectedTime.minute
-                        isTimePickerOpen = true
+                        isTimePickerOpen.value = true
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -177,9 +176,9 @@ fun CreateRoutineScreen(
         }
     }
 
-    if (isTimePickerOpen) {
+    if (isTimePickerOpen.value) {
         AlertDialog(
-            onDismissRequest = { isTimePickerOpen = false },
+            onDismissRequest = { isTimePickerOpen.value = false },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -189,14 +188,14 @@ fun CreateRoutineScreen(
                                 minute = timePickerState.minute
                             )
                         )
-                        isTimePickerOpen = false
+                        isTimePickerOpen.value = false
                     }
                 ) {
                     Text(text = stringResource(R.string.create_routine_time_confirm))
                 }
             },
             dismissButton = {
-                TextButton(onClick = { isTimePickerOpen = false }) {
+                TextButton(onClick = { isTimePickerOpen.value = false }) {
                     Text(text = stringResource(R.string.create_routine_time_cancel))
                 }
             },
@@ -221,9 +220,9 @@ private fun parseTimeLabel(scheduleLabel: String): TimeSelection {
         return TimeSelection(hour = 6, minute = 30)
     }
     val period = match.groupValues[3].uppercase(Locale.US)
-    val hour = when {
-        period == "AM" && displayHour == 12 -> 0
-        period == "PM" && displayHour != 12 -> displayHour + 12
+    val hour = when (period) {
+        "AM" if displayHour == 12 -> 0
+        "PM" if displayHour != 12 -> displayHour + 12
         else -> displayHour
     }
     return TimeSelection(hour = hour, minute = minute)
