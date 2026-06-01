@@ -5,9 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.nai.routinetracker.domain.repository.RoutineRepository
 import com.nai.routinetracker.model.RoutineCategories
 import com.nai.routinetracker.model.RoutineCategory
-import com.nai.routinetracker.model.RoutineItem
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -17,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RoutineViewModel @Inject constructor(
-    private val repository: RoutineRepository
+    private val routineRepository: RoutineRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(RoutinesUiState(isLoading = true))
     val uiState = _uiState.asStateFlow()
@@ -56,15 +54,11 @@ class RoutineViewModel @Inject constructor(
         if (!form.canSubmit) return
 
         viewModelScope.launch {
-            repository.createRoutine(
-                RoutineItem(
-                    id = UUID.randomUUID().toString(),
-                    title = form.title.trim(),
-                    scheduleLabel = form.scheduleLabel.trim(),
-                    category = form.selectedCategory,
-                    streakDays = 0,
-                    description = form.description.trim()
-                )
+            routineRepository.createRoutine(
+                title = form.title.trim(),
+                scheduleLabel = form.scheduleLabel.trim(),
+                category = form.selectedCategory,
+                description = form.description.trim()
             )
             _createUiState.value = CreateRoutineUiState()
             onCreated()
@@ -73,7 +67,7 @@ class RoutineViewModel @Inject constructor(
 
     private fun observeDashboard() {
         viewModelScope.launch {
-            repository.observeDashboard().collectLatest { dashboard ->
+            routineRepository.observeDashboard().collectLatest { dashboard ->
                 _uiState.update {
                     it.copy(
                         isLoading = false,
