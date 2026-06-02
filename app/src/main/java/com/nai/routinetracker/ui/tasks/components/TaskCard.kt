@@ -1,12 +1,7 @@
 package com.nai.routinetracker.ui.tasks.components
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -24,9 +19,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TriStateCheckbox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -34,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -54,7 +48,6 @@ fun TaskCard(
     val containerColor by animateColorAsState(
         targetValue = when (task.status) {
             TaskStatus.Pending -> MaterialTheme.colorScheme.surface
-            TaskStatus.InProgress -> MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.55f)
             TaskStatus.Done -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.9f)
         },
         animationSpec = spring(),
@@ -75,12 +68,6 @@ fun TaskCard(
         ),
         label = "taskCardScale"
     )
-
-    val checkboxState = when (task.status) {
-        TaskStatus.Pending -> ToggleableState.Off
-        TaskStatus.InProgress -> ToggleableState.Indeterminate
-        TaskStatus.Done -> ToggleableState.On
-    }
 
     Card(
         modifier = modifier
@@ -138,9 +125,9 @@ fun TaskCard(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    TriStateCheckbox(
-                        state = checkboxState,
-                        onClick = { onToggleTask(task.id) }
+                    Checkbox(
+                        checked = task.isDone,
+                        onCheckedChange = { onToggleTask(task.id) }
                     )
                     Text(
                         text = task.status.label(),
@@ -148,22 +135,6 @@ fun TaskCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha)
                     )
                 }
-            }
-
-            AnimatedVisibility(
-                visible = task.status == TaskStatus.InProgress,
-                enter = fadeIn(tween(durationMillis = 140)) + expandVertically(
-                    animationSpec = spring(stiffness = Spring.StiffnessMediumLow)
-                ),
-                exit = fadeOut(tween(durationMillis = 100)) + shrinkVertically(
-                    animationSpec = spring(stiffness = Spring.StiffnessMedium)
-                )
-            ) {
-                Text(
-                    text = stringResource(R.string.task_in_progress_hint),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary
-                )
             }
 
             CategoryBadge(category = task.category)
@@ -192,7 +163,6 @@ private fun TaskStatus.label(): String {
     return stringResource(
         when (this) {
             TaskStatus.Pending -> R.string.task_status_pending
-            TaskStatus.InProgress -> R.string.task_status_in_progress
             TaskStatus.Done -> R.string.task_status_done
         }
     )

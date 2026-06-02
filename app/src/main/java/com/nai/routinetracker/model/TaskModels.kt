@@ -27,7 +27,6 @@ object TaskCategories {
 
 enum class TaskStatus {
     Pending,
-    InProgress,
     Done
 }
 
@@ -47,8 +46,7 @@ val TaskItem.isDone: Boolean
 
 fun TaskStatus.next(): TaskStatus {
     return when (this) {
-        TaskStatus.Pending -> TaskStatus.InProgress
-        TaskStatus.InProgress -> TaskStatus.Done
+        TaskStatus.Pending -> TaskStatus.Done
         TaskStatus.Done -> TaskStatus.Pending
     }
 }

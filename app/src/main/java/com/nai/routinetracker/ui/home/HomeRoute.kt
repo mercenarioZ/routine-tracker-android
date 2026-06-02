@@ -31,7 +31,6 @@ fun HomeRoute(
                     val message = context.getString(
                         when (effect.newStatus) {
                             TaskStatus.Pending -> R.string.home_task_marked_pending
-                            TaskStatus.InProgress -> R.string.home_task_marked_in_progress
                             TaskStatus.Done -> R.string.home_task_marked_done
                         },
                         effect.taskTitle

@@ -74,7 +74,7 @@ internal fun buildSampleTasks(context: Context, routines: List<RoutineItem>): Li
             routineId = "hydration",
             taskId = "task-hydration-today",
             dueLabelRes = R.string.task_today_due_label,
-            status = TaskStatus.InProgress
+            status = TaskStatus.Pending
         ),
         taskFromRoutine(
             routineId = "planning",
