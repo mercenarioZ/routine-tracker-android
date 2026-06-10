@@ -53,12 +53,20 @@ data class RoutineDto(
                     "time",
                     "startTime",
                     "reminderTime"
+                ) ?: buildScheduleLabel(
+                    frequency = json.optFirstString("frequency"),
+                    startDate = json.optFirstString("startDate")
                 ),
                 category = RoutineCategoryDto.fromJsonValue(
                     json.optNullable("category")
                         ?: json.optFirstString("categoryName", "categoryLabel", "categoryId")
                 ),
-                streakDays = json.optFirstInt("streakDays", "streak", "currentStreak"),
+                streakDays = json.optFirstInt(
+                    "streakDays",
+                    "streak",
+                    "currentStreak",
+                    "streakCount"
+                ),
                 isActive = json.optFirstBoolean("isActive", "active"),
                 description = json.optFirstString("description", "note")
             )
@@ -145,6 +153,17 @@ private fun JSONObject.optFirstBoolean(vararg names: String): Boolean? {
     return names.firstNotNullOfOrNull { name ->
         if (has(name) && !isNull(name)) optBoolean(name) else null
     }
+}
+
+private fun buildScheduleLabel(
+    frequency: String?,
+    startDate: String?
+): String? {
+    return listOfNotNull(
+        frequency?.replace('_', ' '),
+        startDate?.let { "from $it" }
+    ).joinToString(separator = " • ")
+        .ifBlank { null }
 }
 
 private fun String.toStableId(): String {

@@ -25,8 +25,8 @@ fun MetricsRow(state: HomeUiState) {
     ) {
         MetricCard(
             modifier = Modifier.weight(1f),
-            title = stringResource(R.string.home_metric_completion),
-            value = "${(state.completionRatio * 100).toInt()}%"
+            title = stringResource(R.string.home_metric_active_routines),
+            value = state.activeRoutines.size.toString()
         )
         MetricCard(
             modifier = Modifier.weight(1f),
@@ -44,7 +44,7 @@ private fun MetricCard(
 ) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(22.dp),
+        shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         )

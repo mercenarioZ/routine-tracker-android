@@ -42,11 +42,11 @@ fun HeaderSection(
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
-//            Text(
-//                text = state.highlight,
-//                style = MaterialTheme.typography.bodyLarge,
-//                color = MaterialTheme.colorScheme.onSurfaceVariant
-//            ) // quote
+            Text(
+                text = state.highlight.orEmpty(),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
 
         IconButton(

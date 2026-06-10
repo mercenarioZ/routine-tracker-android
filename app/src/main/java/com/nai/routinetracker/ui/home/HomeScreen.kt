@@ -18,12 +18,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nai.routinetracker.R
+import com.nai.routinetracker.model.RoutineCategories
+import com.nai.routinetracker.model.RoutineItem
 import com.nai.routinetracker.model.TaskCategories
 import com.nai.routinetracker.model.TaskItem
 import com.nai.routinetracker.model.TaskStatus
 import com.nai.routinetracker.ui.home.components.HeaderSection
 import com.nai.routinetracker.ui.home.components.MetricsRow
 import com.nai.routinetracker.ui.home.components.OverviewCard
+import com.nai.routinetracker.ui.home.components.RoutineCard
 import com.nai.routinetracker.ui.tasks.components.TaskCard
 import com.nai.routinetracker.ui.theme.RoutineTrackerTheme
 
@@ -38,7 +41,7 @@ fun HomeScreen(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        if (state.isLoading && state.tasks.isEmpty()) {
+        if (state.isLoading && state.routines.isEmpty() && state.tasks.isEmpty()) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -52,8 +55,13 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .statusBarsPadding(),
-            contentPadding = PaddingValues(20.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+            contentPadding = PaddingValues(
+                start = 20.dp,
+                top = 20.dp,
+                end = 20.dp,
+                bottom = 28.dp
+            ),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
                 HeaderSection(
@@ -71,22 +79,59 @@ fun HomeScreen(
             }
 
             item {
-                Text(
-                    text = stringResource(R.string.home_routines_title),
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
+                SectionTitle(text = stringResource(R.string.home_active_routines_title))
             }
 
-            items(state.orderedTasks, key = { it.id }) { task ->
-                TaskCard(
-                    task = task,
-                    onToggleTask = onToggleTask,
-                    modifier = Modifier.animateItem()
-                )
+            if (state.activeRoutines.isEmpty()) {
+                item {
+                    EmptySectionText(text = stringResource(R.string.home_overview_empty_body))
+                }
+            } else {
+                items(state.activeRoutines, key = { it.id }) { routine ->
+                    RoutineCard(
+                        routine = routine,
+                        modifier = Modifier.animateItem()
+                    )
+                }
+            }
+
+            item {
+                SectionTitle(text = stringResource(R.string.home_routines_title))
+            }
+
+            if (state.orderedTasks.isEmpty()) {
+                item {
+                    EmptySectionText(text = stringResource(R.string.home_tasks_empty_state))
+                }
+            } else {
+                items(state.orderedTasks, key = { it.id }) { task ->
+                    TaskCard(
+                        task = task,
+                        onToggleTask = onToggleTask,
+                        modifier = Modifier.animateItem()
+                    )
+                }
             }
         }
     }
+}
+
+@Composable
+private fun SectionTitle(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.titleLarge,
+        color = MaterialTheme.colorScheme.onBackground
+    )
+}
+
+@Composable
+private fun EmptySectionText(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+    )
 }
 
 @Preview(showBackground = true, widthDp = 390, heightDp = 844)
@@ -97,6 +142,24 @@ private fun HomeScreenPreview() {
             state = HomeUiState(
                 userName = "Nai",
                 dateLabel = "Wednesday, April 29",
+                routines = listOf(
+                    RoutineItem(
+                        id = "hydration",
+                        title = "Hydrate and stretch",
+                        scheduleLabel = "DAILY",
+                        category = RoutineCategories.Health,
+                        streakDays = 12,
+                        description = "Drink water, stretch for five minutes, and wake the body up."
+                    ),
+                    RoutineItem(
+                        id = "planning",
+                        title = "Plan top 3 tasks",
+                        scheduleLabel = "DAILY",
+                        category = RoutineCategories.Planning,
+                        streakDays = 8,
+                        description = "Write the three outcomes that must happen today."
+                    )
+                ),
                 tasks = listOf(
                     TaskItem(
                         id = "task-hydration",
