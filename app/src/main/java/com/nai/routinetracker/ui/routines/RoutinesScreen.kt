@@ -87,6 +87,16 @@ fun RoutinesScreen(
                     }
                 }
 
+                state.errorMessage?.let { errorMessage ->
+                    item {
+                        Text(
+                            text = errorMessage,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                }
+
                 item {
                     CategoryFilters(
                         categories = state.categories,

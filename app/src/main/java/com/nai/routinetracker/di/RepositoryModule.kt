@@ -1,8 +1,8 @@
 package com.nai.routinetracker.di
 
-import com.nai.routinetracker.data.repository.FakeRoutineRepository
 import com.nai.routinetracker.data.repository.FakeTaskRepository
 import com.nai.routinetracker.data.repository.RemoteAuthRepository
+import com.nai.routinetracker.data.repository.RemoteRoutineRepository
 import com.nai.routinetracker.data.session.DataStoreAuthSessionStore
 import com.nai.routinetracker.domain.repository.AuthRepository
 import com.nai.routinetracker.domain.repository.RoutineRepository
@@ -32,7 +32,7 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindRoutineRepository(
-        fakeRoutineRepository: FakeRoutineRepository
+        remoteRoutineRepository: RemoteRoutineRepository
     ): RoutineRepository
 
     @Binds

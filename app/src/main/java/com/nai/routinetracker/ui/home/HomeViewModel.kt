@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -48,11 +49,17 @@ class HomeViewModel @Inject constructor(
 
     private fun observeRoutineDashboard() {
         viewModelScope.launch {
-            routineRepository.observeDashboard().collectLatest { dashboardState ->
-                _uiState.update { currentState ->
-                    dashboardState.toUiState().copy(tasks = currentState.tasks)
+            routineRepository.observeDashboard()
+                .catch {
+                    _uiState.update { currentState ->
+                        currentState.copy(isLoading = false)
+                    }
                 }
-            }
+                .collectLatest { dashboardState ->
+                    _uiState.update { currentState ->
+                        dashboardState.toUiState().copy(tasks = currentState.tasks)
+                    }
+                }
         }
     }
 

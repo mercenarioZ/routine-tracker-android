@@ -6,7 +6,8 @@ import com.nai.routinetracker.model.RoutineItem
 data class RoutinesUiState(
     val isLoading: Boolean = false,
     val routines: List<RoutineItem> = emptyList(),
-    val selectedCategory: RoutineCategory? = null
+    val selectedCategory: RoutineCategory? = null,
+    val errorMessage: String? = null
 ) {
     val categories: List<RoutineCategory>
         get() = routines.map { it.category }.distinctBy { it.id }

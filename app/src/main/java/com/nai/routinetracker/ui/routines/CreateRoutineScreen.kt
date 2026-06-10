@@ -173,6 +173,14 @@ fun CreateRoutineScreen(
             ) {
                 Text(text = stringResource(R.string.create_routine_save))
             }
+
+            state.errorMessage?.let { errorMessage ->
+                Text(
+                    text = errorMessage,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
         }
     }
 
