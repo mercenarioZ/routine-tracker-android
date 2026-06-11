@@ -4,9 +4,15 @@ import com.nai.routinetracker.model.RoutineCategories
 import com.nai.routinetracker.model.RoutineCategory
 import com.nai.routinetracker.model.RoutineItem
 import java.util.Locale
-import org.json.JSONArray
-import org.json.JSONObject
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.contentOrNull
 
+@Serializable
 data class RoutineDto(
     val id: String?,
     val title: String?,
@@ -34,19 +40,19 @@ data class RoutineDto(
     }
 
     companion object {
-        fun listFromJsonValue(value: Any?): List<RoutineDto> {
+        fun listFromJsonValue(value: JsonElement?): List<RoutineDto> {
             return when (value) {
-                is JSONArray -> value.toRoutineDtos()
-                is JSONObject -> value.extractRoutineArray().toRoutineDtos()
+                is JsonArray -> value.toRoutineDtos()
+                is JsonObject -> value.extractRoutineArray().toRoutineDtos()
                 else -> emptyList()
             }
         }
 
-        fun fromJson(json: JSONObject): RoutineDto {
+        fun fromJson(json: JsonObject): RoutineDto {
             return RoutineDto(
-                id = json.optFirstString("id", "_id", "routineId"),
-                title = json.optFirstString("title", "name"),
-                scheduleLabel = json.optFirstString(
+                id = json.firstStringOrNull("id", "_id", "routineId"),
+                title = json.firstStringOrNull("title", "name"),
+                scheduleLabel = json.firstStringOrNull(
                     "scheduleLabel",
                     "timeLabel",
                     "schedule",
@@ -54,26 +60,28 @@ data class RoutineDto(
                     "startTime",
                     "reminderTime"
                 ) ?: buildScheduleLabel(
-                    frequency = json.optFirstString("frequency"),
-                    startDate = json.optFirstString("startDate")
+                    frequency = json.firstStringOrNull("frequency"),
+                    startDate = json.firstStringOrNull("startDate")
                 ),
                 category = RoutineCategoryDto.fromJsonValue(
-                    json.optNullable("category")
-                        ?: json.optFirstString("categoryName", "categoryLabel", "categoryId")
+                    json.elementOrNull("category")
+                        ?: json.firstStringOrNull("categoryName", "categoryLabel", "categoryId")
+                            ?.let(::JsonPrimitive)
                 ),
-                streakDays = json.optFirstInt(
+                streakDays = json.firstIntOrNull(
                     "streakDays",
                     "streak",
                     "currentStreak",
                     "streakCount"
                 ),
-                isActive = json.optFirstBoolean("isActive", "active"),
-                description = json.optFirstString("description", "note")
+                isActive = json.firstBooleanOrNull("isActive", "active"),
+                description = json.firstStringOrNull("description", "note")
             )
         }
     }
 }
 
+@Serializable
 data class RoutineCategoryDto(
     val id: String?,
     val label: String?
@@ -92,16 +100,16 @@ data class RoutineCategoryDto(
     }
 
     companion object {
-        fun fromJsonValue(value: Any?): RoutineCategoryDto? {
+        fun fromJsonValue(value: JsonElement?): RoutineCategoryDto? {
             return when (value) {
-                null, JSONObject.NULL -> null
-                is JSONObject -> RoutineCategoryDto(
-                    id = value.optFirstString("id", "categoryId", "code"),
-                    label = value.optFirstString("label", "name", "title")
+                null, is JsonNull -> null
+                is JsonObject -> RoutineCategoryDto(
+                    id = value.firstStringOrNull("id", "categoryId", "code"),
+                    label = value.firstStringOrNull("label", "name", "title")
                 )
-                is String -> RoutineCategoryDto(
-                    id = value.toStableId(),
-                    label = value
+                is JsonPrimitive -> RoutineCategoryDto(
+                    id = value.contentOrNull?.toStableId(),
+                    label = value.contentOrNull
                 )
                 else -> RoutineCategoryDto(
                     id = value.toString().toStableId(),
@@ -112,46 +120,21 @@ data class RoutineCategoryDto(
     }
 }
 
-private fun JSONObject.extractRoutineArray(): JSONArray {
-    return optFirstArray("content", "items", "routines", "results", "data") ?: JSONArray()
+private fun JsonObject.extractRoutineArray(): JsonArray {
+    return firstArrayOrNull("content", "items", "routines", "results", "data") ?: JsonArray(emptyList())
 }
 
-private fun JSONArray.toRoutineDtos(): List<RoutineDto> {
+private fun JsonArray.toRoutineDtos(): List<RoutineDto> {
     return buildList {
-        for (index in 0 until length()) {
-            val item = opt(index)
-            if (item is JSONObject) {
-                add(RoutineDto.fromJson(item))
-            }
+        this@toRoutineDtos.forEach { item ->
+            item.jsonObjectOrNull()?.let { add(RoutineDto.fromJson(it)) }
         }
     }
 }
 
-private fun JSONObject.optNullable(name: String): Any? {
-    return if (has(name) && !isNull(name)) opt(name) else null
-}
-
-private fun JSONObject.optFirstArray(vararg names: String): JSONArray? {
+private fun JsonObject.firstArrayOrNull(vararg names: String): JsonArray? {
     return names.firstNotNullOfOrNull { name ->
-        optNullable(name) as? JSONArray
-    }
-}
-
-private fun JSONObject.optFirstString(vararg names: String): String? {
-    return names.firstNotNullOfOrNull { name ->
-        if (has(name) && !isNull(name)) optString(name).ifBlank { null } else null
-    }
-}
-
-private fun JSONObject.optFirstInt(vararg names: String): Int? {
-    return names.firstNotNullOfOrNull { name ->
-        if (has(name) && !isNull(name)) optInt(name) else null
-    }
-}
-
-private fun JSONObject.optFirstBoolean(vararg names: String): Boolean? {
-    return names.firstNotNullOfOrNull { name ->
-        if (has(name) && !isNull(name)) optBoolean(name) else null
+        elementOrNull(name).jsonArrayOrNull()
     }
 }
 

@@ -1,8 +1,14 @@
 package com.nai.routinetracker.data.remote.dto
 
-import org.json.JSONArray
-import org.json.JSONObject
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.contentOrNull
 
+@Serializable
 data class ApiErrorDto(
     val message: String?,
     val messageKey: String?,
@@ -29,20 +35,16 @@ data class ApiErrorDto(
         fun fromJson(jsonString: String): ApiErrorDto {
             if (jsonString.isBlank()) return empty()
 
-            return runCatching {
-                val json = JSONObject(jsonString)
-                ApiErrorDto(
-                    message = json.optString("message")
-                        .ifBlank { json.optString("error") }
-                        .ifBlank { null },
-                    messageKey = json.optStringOrNull("messageKey"),
-                    path = json.optStringOrNull("path"),
-                    status = json.optIntOrNull("status"),
-                    success = json.optBooleanOrNull("success"),
-                    timestamp = json.optLongOrNull("timestamp"),
-                    errors = json.optJSONObject("errors").toValidationErrors()
-                )
-            }.getOrDefault(empty())
+            val json = jsonString.parseJsonElementOrPrimitive().jsonObjectOrNull() ?: return empty()
+            return ApiErrorDto(
+                message = json.firstStringOrNull("message", "error"),
+                messageKey = json.stringOrNull("messageKey"),
+                path = json.stringOrNull("path"),
+                status = json.intOrNull("status"),
+                success = json.booleanOrNull("success"),
+                timestamp = json.longOrNull("timestamp"),
+                errors = json.elementOrNull("errors").toValidationErrors()
+            )
         }
 
         private fun empty(): ApiErrorDto {
@@ -59,16 +61,15 @@ data class ApiErrorDto(
     }
 }
 
-private fun JSONObject?.toValidationErrors(): Map<String, List<String>> {
-    if (this == null) return emptyMap()
+private fun JsonElement?.toValidationErrors(): Map<String, List<String>> {
+    val errors = jsonObjectOrNull() ?: return emptyMap()
 
     return buildMap {
-        keys().forEach { key ->
-            val value = opt(key)
+        errors.forEach { (key, value) ->
             val messages = when (value) {
-                is JSONArray -> value.toStringList()
-                is String -> listOf(value)
-                JSONObject.NULL, null -> emptyList()
+                is JsonNull -> emptyList()
+                is JsonArray -> value.toStringList()
+                is JsonPrimitive -> listOfNotNull(value.contentOrNull)
                 else -> listOf(value.toString())
             }
             put(key, messages)
@@ -76,29 +77,14 @@ private fun JSONObject?.toValidationErrors(): Map<String, List<String>> {
     }
 }
 
-private fun JSONArray.toStringList(): List<String> {
+private fun JsonArray.toStringList(): List<String> {
     return buildList {
-        for (index in 0 until length()) {
-            val value = opt(index)
-            if (value != null && value != JSONObject.NULL) {
-                add(value.toString())
+        this@toStringList.forEach { value ->
+            when (value) {
+                is JsonNull -> Unit
+                is JsonPrimitive -> value.contentOrNull?.let(::add)
+                else -> add(value.toString())
             }
         }
     }
-}
-
-private fun JSONObject.optStringOrNull(name: String): String? {
-    return if (has(name) && !isNull(name)) optString(name).ifBlank { null } else null
-}
-
-private fun JSONObject.optIntOrNull(name: String): Int? {
-    return if (has(name) && !isNull(name)) optInt(name) else null
-}
-
-private fun JSONObject.optLongOrNull(name: String): Long? {
-    return if (has(name) && !isNull(name)) optLong(name) else null
-}
-
-private fun JSONObject.optBooleanOrNull(name: String): Boolean? {
-    return if (has(name) && !isNull(name)) optBoolean(name) else null
 }

@@ -1,8 +1,9 @@
 package com.nai.routinetracker.data.remote.dto
 
-import org.json.JSONArray
-import org.json.JSONObject
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
+@Serializable
 data class ApiResponseDto<T>(
     val data: T?,
     val message: String?,
@@ -15,26 +16,27 @@ data class ApiResponseDto<T>(
     companion object {
         fun <T> fromJson(
             jsonString: String,
-            parseData: (Any?) -> T?
+            parseData: (JsonElement?) -> T?
         ): ApiResponseDto<T> {
             if (jsonString.isBlank()) {
                 return empty()
             }
 
             val trimmedJson = jsonString.trim()
-            if (!trimmedJson.startsWith("{")) {
-                return empty(data = parseData(trimmedJson.toJsonValue()))
+            val jsonElement = trimmedJson.parseJsonElementOrPrimitive()
+            val json = jsonElement.jsonObjectOrNull()
+            if (json == null) {
+                return empty(data = parseData(jsonElement))
             }
 
-            val json = JSONObject(trimmedJson)
             return ApiResponseDto(
-                data = parseData(json.optNullable("data")),
-                message = json.optStringOrNull("message"),
-                messageKey = json.optStringOrNull("messageKey"),
-                path = json.optStringOrNull("path"),
-                status = json.optIntOrNull("status"),
-                success = json.optBooleanOrNull("success"),
-                timestamp = json.optLongOrNull("timestamp")
+                data = parseData(json.elementOrNull("data")),
+                message = json.stringOrNull("message"),
+                messageKey = json.stringOrNull("messageKey"),
+                path = json.stringOrNull("path"),
+                status = json.intOrNull("status"),
+                success = json.booleanOrNull("success"),
+                timestamp = json.longOrNull("timestamp")
             )
         }
 
@@ -50,32 +52,4 @@ data class ApiResponseDto<T>(
             )
         }
     }
-}
-
-private fun String.toJsonValue(): Any? {
-    return when {
-        startsWith("[") -> JSONArray(this)
-        startsWith("{") -> JSONObject(this)
-        else -> this
-    }
-}
-
-private fun JSONObject.optNullable(name: String): Any? {
-    return if (has(name) && !isNull(name)) opt(name) else null
-}
-
-private fun JSONObject.optStringOrNull(name: String): String? {
-    return if (has(name) && !isNull(name)) optString(name).ifBlank { null } else null
-}
-
-private fun JSONObject.optIntOrNull(name: String): Int? {
-    return if (has(name) && !isNull(name)) optInt(name) else null
-}
-
-private fun JSONObject.optLongOrNull(name: String): Long? {
-    return if (has(name) && !isNull(name)) optLong(name) else null
-}
-
-private fun JSONObject.optBooleanOrNull(name: String): Boolean? {
-    return if (has(name) && !isNull(name)) optBoolean(name) else null
 }
