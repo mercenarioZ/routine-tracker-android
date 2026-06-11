@@ -3,22 +3,19 @@ package com.nai.routinetracker.data.remote
 import com.nai.routinetracker.data.remote.dto.ApiResponseDto
 import com.nai.routinetracker.data.remote.dto.RoutineDto
 import com.nai.routinetracker.data.remote.dto.RoutineQueryDto
+import com.nai.routinetracker.data.remote.service.RoutineService
 import javax.inject.Inject
 
 class RoutineApi @Inject constructor(
-    private val apiClient: ApiClient
+    private val service: RoutineService
 ) {
     suspend fun getRoutines(
         query: RoutineQueryDto,
         authorizationHeader: String
     ): ApiResponseDto<List<RoutineDto>> {
-        return ApiResponseDto.fromJson(
-            apiClient.get(
-                path = ApiRoutes.Routines.LIST,
-                queryParameters = query.toQueryParameters(),
-                authorizationHeader = authorizationHeader
-            ),
-            parseData = RoutineDto::listFromJsonValue
-        )
+        return service.getRoutines(
+            queryParameters = query.toQueryParameters(),
+            authorizationHeader = authorizationHeader
+        ).parseApiResponse(RoutineDto::listFromJsonValue)
     }
 }

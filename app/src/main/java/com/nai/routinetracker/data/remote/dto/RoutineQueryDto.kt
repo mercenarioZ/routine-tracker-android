@@ -12,7 +12,7 @@ data class RoutineQueryDto(
     val sortBy: String? = null,
     val sortDirection: String? = null
 ) {
-    fun toQueryParameters(): Map<String, String?> {
+    fun toQueryParameters(): Map<String, String> {
         return mapOf(
             "search" to search,
             "fromDate" to fromDate,
@@ -20,7 +20,8 @@ data class RoutineQueryDto(
             "isActive" to isActive?.toString(),
             "sortBy" to sortBy,
             "sortDirection" to sortDirection
-        )
+        ).filterValues { !it.isNullOrBlank() }
+            .mapValues { it.value.orEmpty() }
     }
 
     companion object {
