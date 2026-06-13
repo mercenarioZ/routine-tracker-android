@@ -16,6 +16,8 @@ For non-trivial work, use OpenSpec as the coordination layer:
 
 Small mechanical edits may skip OpenSpec, but they must still follow the project architecture and verification rules below.
 
+Please don't use Graphiti for this project!
+
 ## Multi-Agent Roles
 
 Use one coordinator agent and only the specialist agents needed for the task. Keep ownership boundaries narrow so agents can work in parallel without editing the same files.
