@@ -118,6 +118,7 @@ If a command cannot be run, report why and name the residual risk.
 - Do not revert user changes unless the user explicitly asks.
 - Keep changes scoped to the assigned task and ownership boundary.
 - Do not commit, rebase, push, or create branches unless the user asks.
+- Follow `docs/git-conventions.md` for branch names, commit messages, PR descriptions, review expectations, and merge policy.
 - Treat `local.properties`, generated build outputs, and machine-specific IDE files as local environment details.
 - Do not edit generated files under `app/build/`.
 
