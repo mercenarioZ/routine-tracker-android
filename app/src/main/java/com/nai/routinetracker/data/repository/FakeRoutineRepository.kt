@@ -1,13 +1,10 @@
 package com.nai.routinetracker.data.repository
 
-import android.content.Context
-import com.nai.routinetracker.R
 import com.nai.routinetracker.domain.repository.RoutineRepository
 import com.nai.routinetracker.domain.repository.TaskRepository
 import com.nai.routinetracker.model.RoutineCategory
 import com.nai.routinetracker.model.RoutineDashboardState
 import com.nai.routinetracker.model.RoutineItem
-import dagger.hilt.android.qualifiers.ApplicationContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -19,11 +16,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 class FakeRoutineRepository @Inject constructor(
-    @ApplicationContext context: Context,
+    seedStringProvider: FakeSeedStringProvider,
     private val taskRepository: TaskRepository
 ) : RoutineRepository {
-    private val appContext = context.applicationContext
-    private val dashboardState = MutableStateFlow(buildDashboardState())
+    private val seedStrings = seedStringProvider.strings()
+    private val dashboardState = MutableStateFlow(buildDashboardState(seedStrings))
 
     override fun observeDashboard(): Flow<RoutineDashboardState> = dashboardState.asStateFlow()
 
@@ -47,12 +44,12 @@ class FakeRoutineRepository @Inject constructor(
         taskRepository.createTaskFromRoutine(routine)
     }
 
-    private fun buildDashboardState(): RoutineDashboardState {
+    private fun buildDashboardState(strings: FakeSeedStrings): RoutineDashboardState {
         return RoutineDashboardState(
-            userName = appContext.getString(R.string.sample_user_name),
+            userName = strings.sampleUserName,
             dateLabel = currentDateLabel(),
-            highlight = appContext.getString(R.string.home_highlight),
-            routines = buildSampleRoutines(appContext)
+            highlight = strings.homeHighlight,
+            routines = buildSampleRoutines(strings)
         )
     }
 
