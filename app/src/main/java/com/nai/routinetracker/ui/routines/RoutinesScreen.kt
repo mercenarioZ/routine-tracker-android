@@ -1,28 +1,21 @@
 package com.nai.routinetracker.ui.routines
 
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,7 +23,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nai.routinetracker.R
 import com.nai.routinetracker.model.RoutineCategory
-import com.nai.routinetracker.ui.home.components.RoutineCard
+import com.nai.routinetracker.ui.routines.components.CategoryFilters
+import com.nai.routinetracker.ui.routines.components.CategoryInsight
+import com.nai.routinetracker.ui.routines.components.EmptyState
+import com.nai.routinetracker.ui.routines.components.ErrorBanner
+import com.nai.routinetracker.ui.routines.components.ListHeader
+import com.nai.routinetracker.ui.routines.components.RoutineHeader
+import com.nai.routinetracker.ui.routines.components.RoutineManagementCard
+import com.nai.routinetracker.ui.routines.components.RoutineSummary
 
 @Composable
 fun RoutinesScreen(
@@ -69,32 +69,30 @@ fun RoutinesScreen(
                     .fillMaxSize()
                     .statusBarsPadding()
                     .padding(innerPadding),
-                contentPadding = PaddingValues(20.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                contentPadding = PaddingValues(
+                    start = 20.dp,
+                    top = 20.dp,
+                    end = 20.dp,
+                    bottom = 92.dp
+                ),
+                verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
                 item {
-                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Text(
-                            text = stringResource(R.string.routines_screen_title),
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                        Text(
-                            text = stringResource(R.string.routines_screen_subtitle),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
+                    RoutineHeader()
+                }
+
+                item {
+                    RoutineSummary(state = state)
                 }
 
                 state.errorMessage?.let { errorMessage ->
                     item {
-                        Text(
-                            text = errorMessage,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.error
-                        )
+                        ErrorBanner(message = errorMessage)
                     }
+                }
+
+                item {
+                    CategoryInsight(state = state)
                 }
 
                 item {
@@ -105,13 +103,20 @@ fun RoutinesScreen(
                     )
                 }
 
+                item {
+                    ListHeader(state = state)
+                }
+
                 if (state.visibleRoutines.isEmpty()) {
                     item {
-                        EmptyState()
+                        EmptyState(
+                            hasFilter = state.selectedCategory != null,
+                            onCreateRoutineClick = onCreateRoutineClick
+                        )
                     }
                 } else {
                     items(state.visibleRoutines, key = { it.id }) { routine ->
-                        RoutineCard(
+                        RoutineManagementCard(
                             routine = routine,
                             modifier = Modifier.animateItem()
                         )
@@ -119,48 +124,5 @@ fun RoutinesScreen(
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun CategoryFilters(
-    categories: List<RoutineCategory>,
-    selectedCategory: RoutineCategory?,
-    onCategorySelected: (RoutineCategory?) -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        FilterChip(
-            selected = selectedCategory == null,
-            onClick = { onCategorySelected(null) },
-            label = { Text(text = stringResource(R.string.routines_filter_all)) }
-        )
-        categories.forEach { category ->
-            FilterChip(
-                selected = selectedCategory == category,
-                onClick = { onCategorySelected(category) },
-                label = { Text(text = category.label) }
-            )
-        }
-    }
-}
-
-@Composable
-private fun EmptyState() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 24.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = stringResource(R.string.routines_empty_state),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
     }
 }
