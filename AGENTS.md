@@ -16,6 +16,8 @@ For non-trivial work, use OpenSpec as the coordination layer:
 
 Small mechanical edits may skip OpenSpec, but they must still follow the project architecture and verification rules below.
 
+Please don't use Graphiti for this project!
+
 ## Multi-Agent Roles
 
 Use one coordinator agent and only the specialist agents needed for the task. Keep ownership boundaries narrow so agents can work in parallel without editing the same files.
@@ -118,6 +120,7 @@ If a command cannot be run, report why and name the residual risk.
 - Do not revert user changes unless the user explicitly asks.
 - Keep changes scoped to the assigned task and ownership boundary.
 - Do not commit, rebase, push, or create branches unless the user asks.
+- Follow `docs/git-conventions.md` for branch names, commit messages, PR descriptions, review expectations, and merge policy.
 - Treat `local.properties`, generated build outputs, and machine-specific IDE files as local environment details.
 - Do not edit generated files under `app/build/`.
 
