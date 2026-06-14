@@ -1,6 +1,8 @@
 package com.nai.routinetracker.data.repository
 
 import com.nai.routinetracker.model.RoutineCategories
+import com.nai.routinetracker.model.RoutineRecurrence
+import com.nai.routinetracker.model.RoutineWeekday
 import com.nai.routinetracker.model.TaskStatus
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -26,6 +28,7 @@ class FakeRoutineRepositoryTest {
             title = "Evening reset",
             scheduleLabel = "08:30 PM",
             category = RoutineCategories.Planning,
+            recurrence = RoutineRecurrence.Weekly(RoutineWeekday.Friday),
             description = "Tidy the desk and plan tomorrow."
         )
 
@@ -42,6 +45,7 @@ class FakeRoutineRepositoryTest {
         assertEquals(initialRoutineCount + 1, routineRepository.observeDashboard().first().routines.size)
         assertEquals("08:30 PM", createdRoutine.scheduleLabel)
         assertEquals(RoutineCategories.Planning, createdRoutine.category)
+        assertEquals(RoutineRecurrence.Weekly(RoutineWeekday.Friday), createdRoutine.recurrence)
         assertEquals("Tidy the desk and plan tomorrow.", createdRoutine.description)
         assertEquals(0, createdRoutine.streakDays)
 
@@ -66,6 +70,10 @@ class FakeRoutineRepositoryTest {
         )
 
         assertTrue(routineRepository.observeDashboard().first().routines.any { it.id == "hydration" })
+        assertEquals(
+            RoutineRecurrence.Daily,
+            routineRepository.observeDashboard().first().routines.single { it.id == "hydration" }.recurrence
+        )
         assertTrue(taskRepository.observeTasks().first().any { it.id == "task-hydration-today" })
     }
 }

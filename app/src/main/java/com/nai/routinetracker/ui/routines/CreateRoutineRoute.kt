@@ -18,6 +18,8 @@ fun CreateRoutineRoute(
         onScheduleChanged = viewModel::onCreateScheduleChanged,
         onDescriptionChanged = viewModel::onCreateDescriptionChanged,
         onCategorySelected = viewModel::onCreateCategorySelected,
+        onRecurrenceModeSelected = viewModel::onCreateRecurrenceModeSelected,
+        onWeekdayToggled = viewModel::onCreateWeekdayToggled,
         onSaveClick = { viewModel.createRoutine(onRoutineCreated) },
         onBackClick = onBackClick
     )

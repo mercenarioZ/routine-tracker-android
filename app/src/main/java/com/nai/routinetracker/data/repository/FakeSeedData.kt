@@ -2,6 +2,8 @@ package com.nai.routinetracker.data.repository
 
 import com.nai.routinetracker.model.RoutineCategories
 import com.nai.routinetracker.model.RoutineItem
+import com.nai.routinetracker.model.RoutineRecurrence
+import com.nai.routinetracker.model.RoutineWeekday
 import com.nai.routinetracker.model.TaskItem
 import com.nai.routinetracker.model.TaskStatus
 import com.nai.routinetracker.model.toTaskCategory
@@ -13,6 +15,7 @@ internal fun buildSampleRoutines(strings: FakeSeedStrings): List<RoutineItem> {
             title = strings.hydrationTitle,
             scheduleLabel = strings.hydrationSchedule,
             category = RoutineCategories.Health,
+            recurrence = RoutineRecurrence.Daily,
             streakDays = 12,
             description = strings.hydrationDescription
         ),
@@ -21,6 +24,7 @@ internal fun buildSampleRoutines(strings: FakeSeedStrings): List<RoutineItem> {
             title = strings.planningTitle,
             scheduleLabel = strings.planningSchedule,
             category = RoutineCategories.Planning,
+            recurrence = RoutineRecurrence.Daily,
             streakDays = 8,
             description = strings.planningDescription
         ),
@@ -29,6 +33,7 @@ internal fun buildSampleRoutines(strings: FakeSeedStrings): List<RoutineItem> {
             title = strings.focusTitle,
             scheduleLabel = strings.focusSchedule,
             category = RoutineCategories.Focus,
+            recurrence = RoutineRecurrence.Weekly(RoutineWeekday.Monday),
             streakDays = 15,
             description = strings.focusDescription
         ),
@@ -37,6 +42,13 @@ internal fun buildSampleRoutines(strings: FakeSeedStrings): List<RoutineItem> {
             title = strings.learningTitle,
             scheduleLabel = strings.learningSchedule,
             category = RoutineCategories.Learning,
+            recurrence = RoutineRecurrence.Custom(
+                setOf(
+                    RoutineWeekday.Tuesday,
+                    RoutineWeekday.Thursday,
+                    RoutineWeekday.Saturday
+                )
+            ),
             streakDays = 5,
             description = strings.learningDescription
         )

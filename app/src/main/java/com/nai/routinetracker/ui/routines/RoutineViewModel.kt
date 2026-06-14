@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nai.routinetracker.domain.repository.RoutineRepository
 import com.nai.routinetracker.model.RoutineCategory
+import com.nai.routinetracker.model.RoutineWeekday
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,6 +50,40 @@ class RoutineViewModel @Inject constructor(
         _createUiState.update { it.copy(selectedCategory = category, errorMessage = null) }
     }
 
+    fun onCreateRecurrenceModeSelected(mode: CreateRoutineRecurrenceMode) {
+        _createUiState.update { state ->
+            state.copy(
+                recurrenceMode = mode,
+                selectedWeekdays = when {
+                    mode == CreateRoutineRecurrenceMode.Daily -> state.selectedWeekdays
+                    state.selectedWeekdays.isNotEmpty() -> state.selectedWeekdays
+                    else -> setOf(RoutineWeekday.Monday)
+                },
+                errorMessage = null
+            )
+        }
+    }
+
+    fun onCreateWeekdayToggled(weekday: RoutineWeekday) {
+        _createUiState.update { state ->
+            val updatedWeekdays = when (state.recurrenceMode) {
+                CreateRoutineRecurrenceMode.Daily -> state.selectedWeekdays
+                CreateRoutineRecurrenceMode.Weekly -> setOf(weekday)
+                CreateRoutineRecurrenceMode.Custom -> {
+                    if (weekday in state.selectedWeekdays) {
+                        state.selectedWeekdays - weekday
+                    } else {
+                        state.selectedWeekdays + weekday
+                    }
+                }
+            }
+            state.copy(
+                selectedWeekdays = updatedWeekdays,
+                errorMessage = null
+            )
+        }
+    }
+
     fun createRoutine(onCreated: () -> Unit) {
         val form = _createUiState.value
         if (!form.canSubmit) return
@@ -61,6 +96,7 @@ class RoutineViewModel @Inject constructor(
                     title = form.title.trim(),
                     scheduleLabel = form.scheduleLabel.trim(),
                     category = form.selectedCategory,
+                    recurrence = form.recurrence,
                     description = form.description.trim()
                 )
             }.onSuccess {

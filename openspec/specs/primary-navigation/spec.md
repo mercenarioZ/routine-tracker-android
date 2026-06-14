@@ -5,11 +5,11 @@ Defines which destinations belong in the app's primary bottom navigation and how
 
 ## Requirements
 ### Requirement: Four primary bottom destinations
-The app SHALL present Home, Routines, Tasks, and Settings as the primary bottom navigation destinations.
+The app SHALL present Home, Routines, Calendar, Tasks, and Settings as the primary bottom navigation destinations.
 
 #### Scenario: Bottom bar displays active product areas
 - **WHEN** the user is on a primary app destination after login
-- **THEN** the bottom navigation shows Home, Routines, Tasks, and Settings
+- **THEN** the bottom navigation shows Home, Routines, Calendar, Tasks, and Settings
 - **AND** the bottom navigation does not show Stats
 
 ### Requirement: Existing non-primary routes remain reachable by graph logic
