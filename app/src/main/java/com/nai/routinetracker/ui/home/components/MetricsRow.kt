@@ -74,7 +74,6 @@ private fun MetricCard(
     Card(
         modifier = modifier.heightIn(min = if (emphasized) 78.dp else 74.dp),
         shape = RoutineVisualDefaults.CardShape,
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         colors = CardDefaults.cardColors(
             containerColor = if (emphasized) {
                 MaterialTheme.colorScheme.tertiaryContainer

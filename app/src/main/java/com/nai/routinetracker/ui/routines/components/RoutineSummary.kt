@@ -35,7 +35,6 @@ fun RoutineSummary(state: RoutinesUiState) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoutineVisualDefaults.CardShape,
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         )

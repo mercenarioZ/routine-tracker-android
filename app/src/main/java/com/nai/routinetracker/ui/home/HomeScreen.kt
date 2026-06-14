@@ -200,7 +200,6 @@ private fun HomeTaskRow(
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoutineVisualDefaults.CardShape,
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         colors = CardDefaults.cardColors(
             containerColor = if (task.status == TaskStatus.Done) {
                 MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.74f)

@@ -309,8 +309,7 @@ private fun SettingsSection(
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(8.dp),
-            color = MaterialTheme.colorScheme.surface,
-            tonalElevation = 1.dp
+            color = MaterialTheme.colorScheme.surface
         ) {
             Column(content = content)
         }

@@ -45,7 +45,6 @@ fun RoutineCard(
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoutineVisualDefaults.CardShape,
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         )
