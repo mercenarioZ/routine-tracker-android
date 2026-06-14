@@ -15,3 +15,4 @@
 ## 4. Verification
 
 - [x] 4.1 Run OpenSpec validation and focused Android build checks.
+- [ ] 4.2 Manual check by user.
