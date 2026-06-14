@@ -1,19 +1,24 @@
 package com.nai.routinetracker.ui.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.EventNote
 import androidx.compose.material.icons.outlined.CheckCircle
@@ -29,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -45,6 +51,7 @@ import com.nai.routinetracker.ui.home.components.MetricsRow
 import com.nai.routinetracker.ui.home.components.OverviewCard
 import com.nai.routinetracker.ui.home.components.RoutineCard
 import com.nai.routinetracker.ui.theme.RoutineTrackerTheme
+import com.nai.routinetracker.ui.theme.RoutineVisualDefaults
 
 @Composable
 fun HomeScreen(
@@ -72,12 +79,12 @@ fun HomeScreen(
                 .fillMaxSize()
                 .statusBarsPadding(),
             contentPadding = PaddingValues(
-                start = 20.dp,
+                start = RoutineVisualDefaults.ScreenHorizontalPadding,
                 top = 20.dp,
-                end = 20.dp,
+                end = RoutineVisualDefaults.ScreenHorizontalPadding,
                 bottom = 28.dp
             ),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
                 HeaderSection(
@@ -146,7 +153,7 @@ private fun SectionHeader(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 4.dp),
+            .padding(top = 2.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -156,14 +163,14 @@ private fun SectionHeader(
             color = MaterialTheme.colorScheme.onBackground
         )
         Surface(
-            shape = CircleShape,
-            color = MaterialTheme.colorScheme.secondaryContainer
+            shape = RoutineVisualDefaults.PillShape,
+            color = MaterialTheme.colorScheme.tertiaryContainer
         ) {
             Text(
                 text = count.toString(),
                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                 style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onTertiaryContainer
             )
         }
     }
@@ -192,20 +199,32 @@ private fun HomeTaskRow(
 
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(8.dp),
+        shape = RoutineVisualDefaults.CardShape,
+        border = RoutineVisualDefaults.cardBorder(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         colors = CardDefaults.cardColors(
             containerColor = if (task.status == TaskStatus.Done) {
-                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.72f)
+                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.74f)
             } else {
                 MaterialTheme.colorScheme.surface
             }
         )
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier
+                .height(IntrinsicSize.Min)
+                .padding(horizontal = 12.dp, vertical = 10.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Box(
+                modifier = Modifier
+                    .width(4.dp)
+                    .fillMaxHeight()
+                    .clip(RoutineVisualDefaults.PillShape)
+                    .background(RoutineVisualDefaults.categoryAccent(task.category.id))
+            )
+
             IconButton(
                 onClick = { onToggleTask(task.id) },
                 modifier = Modifier.size(42.dp)
@@ -248,6 +267,7 @@ private fun HomeTaskRow(
                     }
                 )
                 Row(
+                    modifier = Modifier.heightIn(min = 20.dp),
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -269,13 +289,13 @@ private fun HomeTaskRow(
 
             Surface(
                 shape = CircleShape,
-                color = MaterialTheme.colorScheme.secondaryContainer
+                color = RoutineVisualDefaults.categoryAccent(task.category.id)
             ) {
                 Text(
                     text = task.category.label,
                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    color = RoutineVisualDefaults.onCategoryAccent(task.category.id),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )

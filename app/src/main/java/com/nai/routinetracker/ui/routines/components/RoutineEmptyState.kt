@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Card
@@ -24,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nai.routinetracker.R
+import com.nai.routinetracker.ui.theme.RoutineVisualDefaults
 
 @Composable
 fun EmptyState(
@@ -32,7 +32,9 @@ fun EmptyState(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(8.dp),
+        shape = RoutineVisualDefaults.CardShape,
+        border = RoutineVisualDefaults.cardBorder(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         )
@@ -45,7 +47,7 @@ fun EmptyState(
             Surface(
                 modifier = Modifier.size(42.dp),
                 shape = CircleShape,
-                color = MaterialTheme.colorScheme.secondaryContainer
+                color = MaterialTheme.colorScheme.tertiaryContainer
             ) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -54,7 +56,7 @@ fun EmptyState(
                     Icon(
                         imageVector = Icons.Outlined.Add,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                        tint = MaterialTheme.colorScheme.onTertiaryContainer
                     )
                 }
             }

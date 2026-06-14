@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.PlayCircle
@@ -29,6 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.nai.routinetracker.R
 import com.nai.routinetracker.ui.home.HomeUiState
+import com.nai.routinetracker.ui.theme.RoutineVisualDefaults
 
 @Composable
 fun OverviewCard(state: HomeUiState) {
@@ -41,13 +41,15 @@ fun OverviewCard(state: HomeUiState) {
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(8.dp),
+        shape = RoutineVisualDefaults.CardShape,
+        border = RoutineVisualDefaults.cardBorder(alpha = 0.28f),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         )
     ) {
         Column(
-            modifier = Modifier.padding(20.dp),
+            modifier = Modifier.padding(18.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Row(
@@ -108,30 +110,67 @@ fun OverviewCard(state: HomeUiState) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(8.dp)
-                    .clip(RoundedCornerShape(8.dp)),
+                    .clip(RoutineVisualDefaults.PillShape),
                 color = MaterialTheme.colorScheme.primary,
                 trackColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)
             )
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Text(
-                    text = stringResource(R.string.home_overview_title),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-                Text(
-                    text = stringResource(
+                OverviewStat(
+                    label = stringResource(R.string.home_overview_title),
+                    value = stringResource(
                         R.string.home_routine_summary,
                         state.activeRoutines.size,
                         state.routines.size
                     ),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    modifier = Modifier.weight(1f)
+                )
+                OverviewStat(
+                    label = stringResource(R.string.home_daily_progress),
+                    value = stringResource(
+                        R.string.home_completion_label,
+                        state.completedCount,
+                        state.tasks.size
+                    ),
+                    modifier = Modifier.weight(1f)
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun OverviewStat(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier,
+        shape = RoutineVisualDefaults.CompactShape,
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.62f)
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.72f),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                text = value,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }
@@ -140,7 +179,7 @@ fun OverviewCard(state: HomeUiState) {
 private fun FocusIcon() {
     Surface(
         shape = CircleShape,
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.72f)
     ) {
         Box(
             modifier = Modifier

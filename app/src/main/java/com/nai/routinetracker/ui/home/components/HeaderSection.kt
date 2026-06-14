@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.nai.routinetracker.R
 import com.nai.routinetracker.ui.home.HomeUiState
 import com.nai.routinetracker.ui.theme.RoutineTrackerTheme
+import com.nai.routinetracker.ui.theme.RoutineVisualDefaults
 
 @Composable
 fun HeaderSection(
@@ -38,7 +39,7 @@ fun HeaderSection(
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(0.82f),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            verticalArrangement = Arrangement.spacedBy(9.dp)
         ) {
             DatePill(dateLabel = state.dateLabel)
             Text(
@@ -62,12 +63,14 @@ fun HeaderSection(
                 .align(Alignment.TopEnd)
                 .offset(y = (-4).dp),
             shape = CircleShape,
-            color = MaterialTheme.colorScheme.surface
+            color = MaterialTheme.colorScheme.surface,
+            border = RoutineVisualDefaults.cardBorder()
         ) {
             IconButton(onClick = onLogoutClick) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Outlined.Logout,
-                    contentDescription = stringResource(R.string.home_logout)
+                    contentDescription = stringResource(R.string.home_logout),
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         }
@@ -78,7 +81,7 @@ fun HeaderSection(
 private fun DatePill(dateLabel: String) {
     Surface(
         shape = CircleShape,
-        color = MaterialTheme.colorScheme.secondaryContainer
+        color = MaterialTheme.colorScheme.tertiaryContainer
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
@@ -89,12 +92,12 @@ private fun DatePill(dateLabel: String) {
                 imageVector = Icons.Outlined.CalendarToday,
                 contentDescription = null,
                 modifier = Modifier.size(16.dp),
-                tint = MaterialTheme.colorScheme.onSecondaryContainer
+                tint = MaterialTheme.colorScheme.onTertiaryContainer
             )
             Text(
                 text = dateLabel,
                 style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onTertiaryContainer,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

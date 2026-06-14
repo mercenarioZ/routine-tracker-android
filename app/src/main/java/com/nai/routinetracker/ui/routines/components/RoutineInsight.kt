@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -13,15 +12,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.nai.routinetracker.R
 import com.nai.routinetracker.ui.routines.RoutinesUiState
+import com.nai.routinetracker.ui.theme.RoutineVisualDefaults
 
 @Composable
 fun ErrorBanner(message: String) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(8.dp),
+        shape = RoutineVisualDefaults.CardShape,
         color = MaterialTheme.colorScheme.errorContainer
     ) {
         Column(
@@ -58,7 +59,9 @@ fun CategoryInsight(state: RoutinesUiState) {
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(8.dp),
+        shape = RoutineVisualDefaults.CardShape,
+        border = RoutineVisualDefaults.cardBorder(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         )
@@ -74,18 +77,28 @@ fun CategoryInsight(state: RoutinesUiState) {
             )
             Text(
                 text = categoryContext,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
-            Text(
-                text = stringResource(
-                    R.string.routines_visible_count,
-                    state.visibleRoutines.size,
-                    state.routines.size
-                ),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            Surface(
+                shape = RoutineVisualDefaults.PillShape,
+                color = MaterialTheme.colorScheme.tertiaryContainer
+            ) {
+                Text(
+                    text = stringResource(
+                        R.string.routines_visible_count,
+                        state.visibleRoutines.size,
+                        state.routines.size
+                    ),
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
             if (strongestCategory != null) {
                 Text(
                     text = stringResource(
