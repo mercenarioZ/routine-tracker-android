@@ -62,5 +62,6 @@ val bottomBarDestinations = listOf(
     AppDestination.Home,
     AppDestination.Routines,
     AppDestination.Tasks,
+    AppDestination.Stats,
     AppDestination.Settings
 )
