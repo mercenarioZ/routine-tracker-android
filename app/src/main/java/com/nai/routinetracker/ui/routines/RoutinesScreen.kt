@@ -35,6 +35,7 @@ import com.nai.routinetracker.ui.routines.components.ListHeader
 import com.nai.routinetracker.ui.routines.components.RoutineHeader
 import com.nai.routinetracker.ui.routines.components.RoutineManagementCard
 import com.nai.routinetracker.ui.routines.components.RoutineSummary
+import com.nai.routinetracker.ui.theme.RoutineVisualDefaults
 
 @Composable
 fun RoutinesScreen(
@@ -64,12 +65,12 @@ fun RoutinesScreen(
                     .statusBarsPadding()
                     .padding(innerPadding),
                 contentPadding = PaddingValues(
-                    start = 20.dp,
+                    start = RoutineVisualDefaults.ScreenHorizontalPadding,
                     top = 20.dp,
-                    end = 20.dp,
+                    end = RoutineVisualDefaults.ScreenHorizontalPadding,
                     bottom = 24.dp
                 ),
-                verticalArrangement = Arrangement.spacedBy(14.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
                     RoutineHeader(

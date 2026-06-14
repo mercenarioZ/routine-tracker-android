@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -15,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nai.routinetracker.R
 import com.nai.routinetracker.ui.routines.RoutinesUiState
+import com.nai.routinetracker.ui.theme.RoutineVisualDefaults
 
 @Composable
 fun ListHeader(state: RoutinesUiState) {
@@ -31,14 +31,14 @@ fun ListHeader(state: RoutinesUiState) {
             color = MaterialTheme.colorScheme.onBackground
         )
         Surface(
-            shape = CircleShape,
-            color = MaterialTheme.colorScheme.secondaryContainer
+            shape = RoutineVisualDefaults.PillShape,
+            color = MaterialTheme.colorScheme.tertiaryContainer
         ) {
             Text(
                 text = state.visibleRoutines.size.toString(),
                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                 style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onTertiaryContainer
             )
         }
     }

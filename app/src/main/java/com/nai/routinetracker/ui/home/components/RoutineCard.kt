@@ -5,11 +5,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.EventNote
 import androidx.compose.material.icons.outlined.FavoriteBorder
@@ -32,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.nai.routinetracker.R
 import com.nai.routinetracker.model.RoutineCategory
 import com.nai.routinetracker.model.RoutineItem
+import com.nai.routinetracker.ui.theme.RoutineVisualDefaults
 
 @Composable
 fun RoutineCard(
@@ -40,19 +44,27 @@ fun RoutineCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(8.dp),
+        shape = RoutineVisualDefaults.CardShape,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(RoutineVisualDefaults.CardPadding),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Row(
+                modifier = Modifier.height(IntrinsicSize.Min),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.Top
             ) {
+                Box(
+                    modifier = Modifier
+                        .width(4.dp)
+                        .fillMaxHeight()
+                        .clip(RoutineVisualDefaults.PillShape)
+                        .background(RoutineVisualDefaults.categoryAccent(routine.category.id))
+                )
                 CategoryIcon(category = routine.category)
                 Column(
                     modifier = Modifier.weight(1f),
@@ -94,14 +106,14 @@ private fun CategoryIcon(category: RoutineCategory) {
         modifier = Modifier
             .size(42.dp)
             .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .background(RoutineVisualDefaults.categoryAccent(category.id))
             .padding(9.dp),
         contentAlignment = Alignment.Center
     ) {
         Icon(
             imageVector = category.icon(),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSecondaryContainer
+            tint = RoutineVisualDefaults.onCategoryAccent(category.id)
         )
     }
 }
@@ -111,13 +123,13 @@ private fun CategoryBadge(category: RoutineCategory) {
     Box(
         modifier = Modifier
             .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .background(RoutineVisualDefaults.categoryAccent(category.id))
             .padding(horizontal = 12.dp, vertical = 6.dp)
     ) {
         Text(
             text = category.label,
             style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            color = RoutineVisualDefaults.onCategoryAccent(category.id),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )

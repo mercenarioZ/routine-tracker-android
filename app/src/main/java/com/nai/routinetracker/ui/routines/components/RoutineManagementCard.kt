@@ -1,16 +1,20 @@
 package com.nai.routinetracker.ui.routines.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.EventNote
 import androidx.compose.material.icons.outlined.CheckCircle
@@ -27,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -35,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import com.nai.routinetracker.R
 import com.nai.routinetracker.model.RoutineCategory
 import com.nai.routinetracker.model.RoutineItem
+import com.nai.routinetracker.ui.theme.RoutineVisualDefaults
 
 @Composable
 fun RoutineManagementCard(
@@ -43,7 +49,7 @@ fun RoutineManagementCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(8.dp),
+        shape = RoutineVisualDefaults.CardShape,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         )
@@ -53,9 +59,17 @@ fun RoutineManagementCard(
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             Row(
+                modifier = Modifier.height(IntrinsicSize.Min),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.Top
             ) {
+                Box(
+                    modifier = Modifier
+                        .width(4.dp)
+                        .fillMaxHeight()
+                        .clip(RoutineVisualDefaults.PillShape)
+                        .background(RoutineVisualDefaults.categoryAccent(routine.category.id))
+                )
                 CategoryIcon(category = routine.category)
                 Column(
                     modifier = Modifier.weight(1f),
@@ -120,7 +134,7 @@ private fun CategoryIcon(category: RoutineCategory) {
     Surface(
         modifier = Modifier.size(44.dp),
         shape = CircleShape,
-        color = MaterialTheme.colorScheme.secondaryContainer
+        color = RoutineVisualDefaults.categoryAccent(category.id)
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -130,7 +144,7 @@ private fun CategoryIcon(category: RoutineCategory) {
                 imageVector = category.icon(),
                 contentDescription = null,
                 modifier = Modifier.size(22.dp),
-                tint = MaterialTheme.colorScheme.onSecondaryContainer
+                tint = RoutineVisualDefaults.onCategoryAccent(category.id)
             )
         }
     }
@@ -191,7 +205,7 @@ private fun InfoPill(
 ) {
     Surface(
         modifier = modifier.heightIn(min = 40.dp),
-        shape = RoundedCornerShape(8.dp),
+        shape = RoutineVisualDefaults.CompactShape,
         color = if (emphasized) {
             MaterialTheme.colorScheme.secondaryContainer
         } else {
