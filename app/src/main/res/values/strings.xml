@@ -120,6 +120,12 @@
     <string name="stats_screen_title">Stats screen</string>
     <string name="settings_screen_title">Settings</string>
     <string name="settings_screen_subtitle">Tune local preferences and manage this routine workspace.</string>
+    <string name="settings_appearance_section">Appearance</string>
+    <string name="settings_theme_mode_title">Theme</string>
+    <string name="settings_theme_mode_dialog_title">Choose theme</string>
+    <string name="settings_theme_mode_system">System</string>
+    <string name="settings_theme_mode_light">Light</string>
+    <string name="settings_theme_mode_dark">Dark</string>
     <string name="settings_reminders_section">Routine reminders</string>
     <string name="settings_reminder_enabled_title">Reminder preference</string>
     <string name="settings_reminder_enabled_body">Save a local preference for daily routine planning.</string>
