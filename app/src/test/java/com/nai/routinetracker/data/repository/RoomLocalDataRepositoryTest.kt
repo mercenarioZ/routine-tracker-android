@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -20,17 +21,21 @@ import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [35])
-class LocalRepositoryPersistenceTest {
+class RoomLocalDataRepositoryTest {
     private val context = ApplicationProvider.getApplicationContext<Context>()
-    private val seedStringProvider = LocalStaticFakeSeedStringProvider()
-    private val databaseName = "local-repository-test.db"
+    private val seedStringProvider = ResetTestFakeSeedStringProvider()
+    private val databaseName = "local-data-reset-test.db"
 
     private lateinit var database: RoutineTrackerDatabase
 
     @Before
     fun setUp() {
         context.deleteDatabase(databaseName)
-        database = openDatabase()
+        database = Room.databaseBuilder(
+            context,
+            RoutineTrackerDatabase::class.java,
+            databaseName
+        ).build()
     }
 
     @After
@@ -40,7 +45,7 @@ class LocalRepositoryPersistenceTest {
     }
 
     @Test
-    fun createRoutine_persistsRoutineAndGeneratedTaskAfterDatabaseReopen() = runBlocking {
+    fun resetLocalData_clearsLocalChangesAndRestoresSampleData() = runBlocking {
         val repositories = repositoriesFor(database)
 
         repositories.routineRepository.createRoutine(
@@ -49,68 +54,34 @@ class LocalRepositoryPersistenceTest {
             category = RoutineCategories.Planning,
             description = "Tidy the desk and plan tomorrow."
         )
+        repositories.taskRepository.toggleTask("task-focus-today")
 
-        database.close()
-        database = openDatabase()
-        val reopenedRepositories = repositoriesFor(database)
+        val changedRoutines = repositories.routineRepository.observeDashboard().first().routines
+        val changedTasks = repositories.taskRepository.observeTasks().first()
+        assertTrue(changedRoutines.any { it.title == "Evening reset" })
+        assertEquals(TaskStatus.Pending, changedTasks.single { it.id == "task-focus-today" }.status)
 
-        val routines = reopenedRepositories.routineRepository
-            .observeDashboard()
-            .first()
-            .routines
-        val tasks = reopenedRepositories.taskRepository
-            .observeTasks()
-            .first()
+        repositories.localDataRepository.resetLocalData()
 
-        val createdRoutine = routines.single { it.title == "Evening reset" }
-        val generatedTask = tasks.single { it.routineId == createdRoutine.id }
+        val resetRoutines = repositories.routineRepository.observeDashboard().first().routines
+        val resetTasks = repositories.taskRepository.observeTasks().first()
 
-        assertEquals("08:30 PM", createdRoutine.scheduleLabel)
-        assertEquals(RoutineCategories.Planning.id, createdRoutine.category.id)
-        assertEquals("Tidy the desk and plan tomorrow.", createdRoutine.description)
-        assertEquals(TaskStatus.Pending, generatedTask.status)
-        assertEquals(createdRoutine.title, generatedTask.title)
-        assertEquals(createdRoutine.scheduleLabel, generatedTask.timeLabel)
-        assertEquals("Today", generatedTask.dueLabel)
+        assertEquals(4, resetRoutines.size)
+        assertFalse(resetRoutines.any { it.title == "Evening reset" })
+        assertTrue(resetRoutines.any { it.id == "hydration" })
+        assertEquals(4, resetTasks.size)
+        assertEquals(TaskStatus.Done, resetTasks.single { it.id == "task-focus-today" }.status)
+        assertEquals(TaskStatus.Pending, resetTasks.single { it.id == "task-hydration-today" }.status)
     }
 
-    @Test
-    fun toggleTask_persistsStatusAfterDatabaseReopen() = runBlocking {
-        val repositories = repositoriesFor(database)
-        val taskId = "task-hydration-today"
-
-        assertTrue(repositories.taskRepository.observeTasks().first().any { it.id == taskId })
-
-        repositories.taskRepository.toggleTask(taskId)
-
-        database.close()
-        database = openDatabase()
-        val reopenedRepositories = repositoriesFor(database)
-
-        val task = reopenedRepositories.taskRepository
-            .observeTasks()
-            .first()
-            .single { it.id == taskId }
-
-        assertEquals(TaskStatus.Done, task.status)
-    }
-
-    private fun openDatabase(): RoutineTrackerDatabase {
-        return Room.databaseBuilder(
-            context,
-            RoutineTrackerDatabase::class.java,
-            databaseName
-        ).build()
-    }
-
-    private fun repositoriesFor(database: RoutineTrackerDatabase): LocalRepositories {
+    private fun repositoriesFor(database: RoutineTrackerDatabase): ResetTestRepositories {
         val seeder = LocalDatabaseSeeder(
             database = database,
             routineDao = database.routineDao(),
             taskDao = database.taskDao(),
             seedStringProvider = seedStringProvider
         )
-        return LocalRepositories(
+        return ResetTestRepositories(
             routineRepository = LocalRoutineRepository(
                 database = database,
                 routineDao = database.routineDao(),
@@ -122,17 +93,21 @@ class LocalRepositoryPersistenceTest {
                 taskDao = database.taskDao(),
                 seeder = seeder,
                 seedStringProvider = seedStringProvider
+            ),
+            localDataRepository = RoomLocalDataRepository(
+                seeder = seeder
             )
         )
     }
 
-    private data class LocalRepositories(
+    private data class ResetTestRepositories(
         val routineRepository: LocalRoutineRepository,
-        val taskRepository: LocalTaskRepository
+        val taskRepository: LocalTaskRepository,
+        val localDataRepository: RoomLocalDataRepository
     )
 }
 
-private class LocalStaticFakeSeedStringProvider : FakeSeedStringProvider {
+private class ResetTestFakeSeedStringProvider : FakeSeedStringProvider {
     override fun strings(): FakeSeedStrings {
         return FakeSeedStrings(
             sampleUserName = "Builder",

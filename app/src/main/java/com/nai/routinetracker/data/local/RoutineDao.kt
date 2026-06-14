@@ -19,4 +19,7 @@ interface RoutineDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(routines: List<LocalRoutineEntity>)
+
+    @Query("DELETE FROM routines")
+    suspend fun deleteAll()
 }

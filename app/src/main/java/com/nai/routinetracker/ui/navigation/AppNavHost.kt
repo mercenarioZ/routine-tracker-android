@@ -52,6 +52,13 @@ fun AppNavHost(
     val showBottomBar = bottomBarDestinations.any { destination ->
         currentDestination?.hierarchy?.any { it.route == destination.route } == true
     }
+    val logoutAndNavigateToLogin = {
+        authViewModel.logout()
+        navController.navigate(AppDestination.Login.route) {
+            popUpTo(navController.graph.id) { inclusive = true }
+            launchSingleTop = true
+        }
+    }
 
     Scaffold(
         bottomBar = {
@@ -109,13 +116,7 @@ fun AppNavHost(
             }
             composable(route = AppDestination.Home.route) {
                 HomeRoute(
-                    onLogoutClick = {
-                        authViewModel.logout()
-                        navController.navigate(AppDestination.Login.route) {
-                            popUpTo(navController.graph.id) { inclusive = true }
-                            launchSingleTop = true
-                        }
-                    }
+                    onLogoutClick = logoutAndNavigateToLogin
                 )
             }
             composable(route = AppDestination.Routines.route) {
@@ -142,7 +143,9 @@ fun AppNavHost(
                 StatsRoute()
             }
             composable(route = AppDestination.Settings.route) {
-                SettingsRoute()
+                SettingsRoute(
+                    onSignOutClick = logoutAndNavigateToLogin
+                )
             }
         }
     }
