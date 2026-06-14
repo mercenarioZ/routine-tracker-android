@@ -6,6 +6,8 @@ import androidx.test.core.app.ApplicationProvider
 import com.nai.routinetracker.data.local.LocalDatabaseSeeder
 import com.nai.routinetracker.data.local.RoutineTrackerDatabase
 import com.nai.routinetracker.model.RoutineCategories
+import com.nai.routinetracker.model.RoutineRecurrence
+import com.nai.routinetracker.model.RoutineWeekday
 import com.nai.routinetracker.model.TaskStatus
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -47,6 +49,7 @@ class LocalRepositoryPersistenceTest {
             title = "Evening reset",
             scheduleLabel = "08:30 PM",
             category = RoutineCategories.Planning,
+            recurrence = RoutineRecurrence.Custom(setOf(RoutineWeekday.Monday, RoutineWeekday.Friday)),
             description = "Tidy the desk and plan tomorrow."
         )
 
@@ -67,6 +70,10 @@ class LocalRepositoryPersistenceTest {
 
         assertEquals("08:30 PM", createdRoutine.scheduleLabel)
         assertEquals(RoutineCategories.Planning.id, createdRoutine.category.id)
+        assertEquals(
+            RoutineRecurrence.Custom(setOf(RoutineWeekday.Monday, RoutineWeekday.Friday)),
+            createdRoutine.recurrence
+        )
         assertEquals("Tidy the desk and plan tomorrow.", createdRoutine.description)
         assertEquals(TaskStatus.Pending, generatedTask.status)
         assertEquals(createdRoutine.title, generatedTask.title)
@@ -100,7 +107,9 @@ class LocalRepositoryPersistenceTest {
             context,
             RoutineTrackerDatabase::class.java,
             databaseName
-        ).build()
+        )
+            .addMigrations(RoutineTrackerDatabase.MIGRATION_1_2)
+            .build()
     }
 
     private fun repositoriesFor(database: RoutineTrackerDatabase): LocalRepositories {

@@ -40,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nai.routinetracker.R
 import com.nai.routinetracker.model.RoutineCategory
+import com.nai.routinetracker.model.RoutineWeekday
 import com.nai.routinetracker.ui.theme.RoutineTrackerTheme
 import java.util.Locale
 
@@ -51,6 +52,8 @@ fun CreateRoutineScreen(
     onScheduleChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onCategorySelected: (RoutineCategory) -> Unit,
+    onRecurrenceModeSelected: (CreateRoutineRecurrenceMode) -> Unit,
+    onWeekdayToggled: (RoutineWeekday) -> Unit,
     onSaveClick: () -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -155,6 +158,49 @@ fun CreateRoutineScreen(
                 }
             }
 
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text(
+                    text = stringResource(R.string.create_routine_recurrence_label),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    CreateRoutineRecurrenceMode.entries.forEach { mode ->
+                        FilterChip(
+                            selected = state.recurrenceMode == mode,
+                            onClick = { onRecurrenceModeSelected(mode) },
+                            label = { Text(text = mode.label()) }
+                        )
+                    }
+                }
+                if (state.recurrenceMode != CreateRoutineRecurrenceMode.Daily) {
+                    Text(
+                        text = stringResource(R.string.create_routine_weekday_label),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        RoutineWeekday.entries.forEach { weekday ->
+                            FilterChip(
+                                selected = weekday in state.selectedWeekdays,
+                                onClick = { onWeekdayToggled(weekday) },
+                                label = { Text(text = weekday.shortLabel) }
+                            )
+                        }
+                    }
+                }
+            }
+
             OutlinedTextField(
                 value = state.description,
                 onValueChange = onDescriptionChanged,
@@ -248,6 +294,17 @@ private fun formatTimeLabel(hour: Int, minute: Int): String {
 
 private val TIME_LABEL_REGEX = Regex("""(\d{1,2}):(\d{2})\s*([AP]M)""", RegexOption.IGNORE_CASE)
 
+@Composable
+private fun CreateRoutineRecurrenceMode.label(): String {
+    return stringResource(
+        when (this) {
+            CreateRoutineRecurrenceMode.Daily -> R.string.create_routine_recurrence_daily
+            CreateRoutineRecurrenceMode.Weekly -> R.string.create_routine_recurrence_weekly
+            CreateRoutineRecurrenceMode.Custom -> R.string.create_routine_recurrence_custom
+        }
+    )
+}
+
 @Preview(showBackground = true, widthDp = 390, heightDp = 844)
 @Composable
 private fun CreateRoutineScreenPreview() {
@@ -262,6 +319,8 @@ private fun CreateRoutineScreenPreview() {
             onScheduleChanged = {},
             onDescriptionChanged = {},
             onCategorySelected = {},
+            onRecurrenceModeSelected = {},
+            onWeekdayToggled = {},
             onSaveClick = {},
             onBackClick = {}
         )

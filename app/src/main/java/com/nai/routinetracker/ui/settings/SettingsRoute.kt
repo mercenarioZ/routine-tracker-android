@@ -49,6 +49,7 @@ fun SettingsRoute(
             state = uiState,
             onReminderEnabledChanged = viewModel::onReminderEnabledChanged,
             onReminderTimeChanged = viewModel::onReminderTimeChanged,
+            onThemeModeChanged = viewModel::onThemeModeChanged,
             onResetLocalDataConfirmed = viewModel::onResetLocalDataConfirmed,
             onSignOutClick = onSignOutClick,
             modifier = Modifier.padding(innerPadding)

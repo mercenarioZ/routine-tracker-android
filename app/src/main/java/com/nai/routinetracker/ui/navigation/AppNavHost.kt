@@ -22,6 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.nai.routinetracker.ui.auth.AuthViewModel
+import com.nai.routinetracker.ui.calendar.CalendarRoute
 import com.nai.routinetracker.ui.home.HomeRoute
 import com.nai.routinetracker.ui.login.LoginRoute
 import com.nai.routinetracker.ui.routines.CreateRoutineRoute
@@ -135,6 +136,9 @@ fun AppNavHost(
                         navController.popBackStack()
                     }
                 )
+            }
+            composable(route = AppDestination.Calendar.route) {
+                CalendarRoute()
             }
             composable(route = AppDestination.Tasks.route) {
                 TasksRoute()

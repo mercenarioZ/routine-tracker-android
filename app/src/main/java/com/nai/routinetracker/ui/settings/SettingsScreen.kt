@@ -21,6 +21,7 @@ import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.RestartAlt
 import androidx.compose.material.icons.outlined.Storage
 import androidx.compose.material3.AlertDialog
@@ -51,6 +52,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nai.routinetracker.R
 import com.nai.routinetracker.domain.settings.ReminderTime
+import com.nai.routinetracker.domain.settings.ThemeMode
 import com.nai.routinetracker.ui.theme.RoutineTrackerTheme
 import java.util.Locale
 
@@ -59,11 +61,13 @@ fun SettingsScreen(
     state: SettingsUiState,
     onReminderEnabledChanged: (Boolean) -> Unit,
     onReminderTimeChanged: (ReminderTime) -> Unit,
+    onThemeModeChanged: (ThemeMode) -> Unit,
     onResetLocalDataConfirmed: () -> Unit,
     onSignOutClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showReminderTimeDialog by rememberSaveable { mutableStateOf(false) }
+    var showThemeModeDialog by rememberSaveable { mutableStateOf(false) }
     var showResetDialog by rememberSaveable { mutableStateOf(false) }
 
     Surface(
@@ -84,6 +88,20 @@ fun SettingsScreen(
         ) {
             item {
                 SettingsHeader()
+            }
+
+            item {
+                SettingsSection(
+                    title = stringResource(R.string.settings_appearance_section),
+                    icon = Icons.Outlined.Palette
+                ) {
+                    PreferenceRow(
+                        icon = Icons.Outlined.Palette,
+                        title = stringResource(R.string.settings_theme_mode_title),
+                        body = state.themeMode.formatForDisplay(),
+                        onClick = { showThemeModeDialog = true }
+                    )
+                }
             }
 
             item {
@@ -254,6 +272,19 @@ fun SettingsScreen(
             }
         )
     }
+
+    if (showThemeModeDialog) {
+        ThemeModeDialog(
+            selectedThemeMode = state.themeMode,
+            onThemeModeSelected = { selectedThemeMode ->
+                onThemeModeChanged(selectedThemeMode)
+                showThemeModeDialog = false
+            },
+            onDismiss = {
+                showThemeModeDialog = false
+            }
+        )
+    }
 }
 
 @Composable
@@ -415,6 +446,51 @@ private fun ReminderTimeDialog(
 }
 
 @Composable
+private fun ThemeModeDialog(
+    selectedThemeMode: ThemeMode,
+    onThemeModeSelected: (ThemeMode) -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = stringResource(R.string.settings_theme_mode_dialog_title))
+        },
+        text = {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                ThemeMode.entries.forEach { option ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onThemeModeSelected(option) }
+                            .padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = option == selectedThemeMode,
+                            onClick = { onThemeModeSelected(option) }
+                        )
+                        Text(
+                            text = option.formatForDisplay(),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = stringResource(R.string.settings_dialog_done))
+            }
+        }
+    )
+}
+
+@Composable
 private fun ResetLocalDataDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
@@ -442,6 +518,17 @@ private fun ResetLocalDataDialog(
             TextButton(onClick = onDismiss) {
                 Text(text = stringResource(R.string.settings_reset_cancel_action))
             }
+        }
+    )
+}
+
+@Composable
+private fun ThemeMode.formatForDisplay(): String {
+    return stringResource(
+        when (this) {
+            ThemeMode.System -> R.string.settings_theme_mode_system
+            ThemeMode.Light -> R.string.settings_theme_mode_light
+            ThemeMode.Dark -> R.string.settings_theme_mode_dark
         }
     )
 }
@@ -474,6 +561,7 @@ private fun SettingsScreenPreview() {
             ),
             onReminderEnabledChanged = {},
             onReminderTimeChanged = {},
+            onThemeModeChanged = {},
             onResetLocalDataConfirmed = {},
             onSignOutClick = {}
         )

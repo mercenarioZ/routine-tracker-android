@@ -12,6 +12,8 @@ data class LocalRoutineEntity(
     @ColumnInfo(name = "category_id") val categoryId: String,
     @ColumnInfo(name = "category_label") val categoryLabel: String,
     @ColumnInfo(name = "category_is_system") val categoryIsSystem: Boolean,
+    @ColumnInfo(name = "recurrence_type", defaultValue = "daily") val recurrenceType: String = "daily",
+    @ColumnInfo(name = "recurrence_days", defaultValue = "") val recurrenceDays: String = "",
     @ColumnInfo(name = "streak_days") val streakDays: Int,
     @ColumnInfo(name = "is_active") val isActive: Boolean,
     val description: String,

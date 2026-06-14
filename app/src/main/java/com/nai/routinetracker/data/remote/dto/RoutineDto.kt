@@ -3,6 +3,8 @@ package com.nai.routinetracker.data.remote.dto
 import com.nai.routinetracker.model.RoutineCategories
 import com.nai.routinetracker.model.RoutineCategory
 import com.nai.routinetracker.model.RoutineItem
+import com.nai.routinetracker.model.RoutineRecurrence
+import com.nai.routinetracker.model.RoutineWeekday
 import java.util.Locale
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonArray
@@ -18,6 +20,7 @@ data class RoutineDto(
     val title: String?,
     val scheduleLabel: String?,
     val category: RoutineCategoryDto?,
+    val recurrence: RoutineRecurrenceDto?,
     val streakDays: Int?,
     val isActive: Boolean?,
     val description: String?
@@ -33,6 +36,7 @@ data class RoutineDto(
                 label = "Routine",
                 isSystem = false
             ),
+            recurrence = recurrence?.toDomain() ?: RoutineRecurrence.Daily,
             streakDays = streakDays ?: 0,
             isActive = isActive ?: true,
             description = description.orEmpty()
@@ -68,6 +72,7 @@ data class RoutineDto(
                         ?: json.firstStringOrNull("categoryName", "categoryLabel", "categoryId")
                             ?.let(::JsonPrimitive)
                 ),
+                recurrence = RoutineRecurrenceDto.fromJson(json),
                 streakDays = json.firstIntOrNull(
                     "streakDays",
                     "streak",
@@ -76,6 +81,41 @@ data class RoutineDto(
                 ),
                 isActive = json.firstBooleanOrNull("isActive", "active"),
                 description = json.firstStringOrNull("description", "note")
+            )
+        }
+    }
+}
+
+@Serializable
+data class RoutineRecurrenceDto(
+    val type: String?,
+    val weekdays: List<RoutineWeekday>
+) {
+    fun toDomain(): RoutineRecurrence {
+        return when (type?.lowercase(Locale.US)) {
+            "weekly" -> RoutineRecurrence.Weekly(
+                weekday = weekdays.firstOrNull() ?: RoutineWeekday.Monday
+            )
+            "custom" -> RoutineRecurrence.Custom(
+                weekdays = weekdays.toSet().ifEmpty { setOf(RoutineWeekday.Monday) }
+            )
+            else -> RoutineRecurrence.Daily
+        }
+    }
+
+    companion object {
+        fun fromJson(json: JsonObject): RoutineRecurrenceDto? {
+            val recurrenceObject = json.elementOrNull("recurrence").jsonObjectOrNull()
+            val type = recurrenceObject?.firstStringOrNull("type", "mode", "frequency")
+                ?: json.firstStringOrNull("recurrenceType", "recurrency", "frequency", "repeat")
+            val weekdays = recurrenceObject?.firstWeekdaysOrEmpty("days", "daysOfWeek", "weekdays")
+                ?: json.firstWeekdaysOrEmpty("days", "daysOfWeek", "weekdays", "customDays")
+
+            if (type.isNullOrBlank() && weekdays.isEmpty()) return null
+
+            return RoutineRecurrenceDto(
+                type = type,
+                weekdays = weekdays
             )
         }
     }
@@ -147,6 +187,45 @@ private fun buildScheduleLabel(
         startDate?.let { "from $it" }
     ).joinToString(separator = " • ")
         .ifBlank { null }
+}
+
+private fun JsonObject.firstWeekdaysOrEmpty(vararg names: String): List<RoutineWeekday> {
+    return names.firstNotNullOfOrNull { name ->
+        elementOrNull(name)?.toWeekdays()?.takeIf { it.isNotEmpty() }
+    }.orEmpty()
+}
+
+private fun JsonElement.toWeekdays(): List<RoutineWeekday> {
+    return when (this) {
+        is JsonArray -> mapNotNull { it.toWeekdayOrNull() }
+        else -> listOfNotNull(toWeekdayOrNull())
+    }
+}
+
+private fun JsonElement.toWeekdayOrNull(): RoutineWeekday? {
+    return when (this) {
+        is JsonPrimitive -> {
+            contentOrNull
+                ?.toIntOrNull()
+                ?.let(RoutineWeekday::fromStorageValue)
+                ?: contentOrNull?.toWeekdayOrNull()
+        }
+        else -> toString().toWeekdayOrNull()
+    }
+}
+
+private fun String.toWeekdayOrNull(): RoutineWeekday? {
+    val normalized = trim().lowercase(Locale.US)
+    return when (normalized) {
+        "1", "mon", "monday" -> RoutineWeekday.Monday
+        "2", "tue", "tues", "tuesday" -> RoutineWeekday.Tuesday
+        "3", "wed", "wednesday" -> RoutineWeekday.Wednesday
+        "4", "thu", "thur", "thurs", "thursday" -> RoutineWeekday.Thursday
+        "5", "fri", "friday" -> RoutineWeekday.Friday
+        "6", "sat", "saturday" -> RoutineWeekday.Saturday
+        "7", "sun", "sunday" -> RoutineWeekday.Sunday
+        else -> null
+    }
 }
 
 private fun String.toStableId(): String {

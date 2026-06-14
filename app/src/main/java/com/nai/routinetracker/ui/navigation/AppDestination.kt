@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Autorenew
 import androidx.compose.material.icons.outlined.BarChart
+import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Checklist
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Settings
@@ -31,6 +32,12 @@ sealed class AppDestination(
         route = "create-routine",
         labelRes = R.string.create_routine_title,
         icon = Icons.Outlined.Autorenew
+    )
+
+    data object Calendar : AppDestination(
+        route = "calendar",
+        labelRes = R.string.tab_calendar,
+        icon = Icons.Outlined.CalendarMonth
     )
 
     data object Tasks : AppDestination(
@@ -61,6 +68,7 @@ sealed class AppDestination(
 val bottomBarDestinations = listOf(
     AppDestination.Home,
     AppDestination.Routines,
+    AppDestination.Calendar,
     AppDestination.Tasks,
     AppDestination.Stats,
     AppDestination.Settings

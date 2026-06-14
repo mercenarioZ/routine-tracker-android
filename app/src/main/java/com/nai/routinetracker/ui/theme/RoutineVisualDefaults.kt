@@ -20,7 +20,7 @@ object RoutineVisualDefaults {
             "health", "personal" -> LeafWash
             "focus", "work" -> MorningBlue
             "learning" -> Sky80.copy(alpha = 0.5f)
-            "planning", "admin" -> Sunrise80.copy(alpha = 0.5f)
+            "planning", "admin" -> Sunrise80.copy(alpha = 0.9f)
             else -> MaterialTheme.colorScheme.secondaryContainer
         }
     }
@@ -29,7 +29,7 @@ object RoutineVisualDefaults {
     fun onCategoryAccent(categoryId: String): Color {
         return when (categoryId) {
             "focus", "work" -> Sky40
-            "planning", "admin" -> Sunrise40
+            "planning", "admin" -> InkSoft
             "health", "personal" -> Evergreen40
             "learning" -> Sky40
             else -> MaterialTheme.colorScheme.onSecondaryContainer

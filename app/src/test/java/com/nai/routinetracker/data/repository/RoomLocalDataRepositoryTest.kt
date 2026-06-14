@@ -6,6 +6,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.nai.routinetracker.data.local.LocalDatabaseSeeder
 import com.nai.routinetracker.data.local.RoutineTrackerDatabase
 import com.nai.routinetracker.model.RoutineCategories
+import com.nai.routinetracker.model.RoutineRecurrence
 import com.nai.routinetracker.model.TaskStatus
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -35,7 +36,9 @@ class RoomLocalDataRepositoryTest {
             context,
             RoutineTrackerDatabase::class.java,
             databaseName
-        ).build()
+        )
+            .addMigrations(RoutineTrackerDatabase.MIGRATION_1_2)
+            .build()
     }
 
     @After
@@ -52,6 +55,7 @@ class RoomLocalDataRepositoryTest {
             title = "Evening reset",
             scheduleLabel = "08:30 PM",
             category = RoutineCategories.Planning,
+            recurrence = RoutineRecurrence.Daily,
             description = "Tidy the desk and plan tomorrow."
         )
         repositories.taskRepository.toggleTask("task-focus-today")

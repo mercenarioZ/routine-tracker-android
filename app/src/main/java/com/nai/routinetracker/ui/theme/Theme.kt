@@ -9,11 +9,12 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.nai.routinetracker.domain.settings.ThemeMode
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Evergreen80,
-    secondary = Forest80,
-    tertiary = Clay80,
+    primary = Sunrise80,
+    secondary = Evergreen80,
+    tertiary = Sky80,
     background = Ink,
     surface = ColorTokens.surfaceDark,
     primaryContainer = ColorTokens.primaryContainerDark,
@@ -34,9 +35,9 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Evergreen40,
+    primary = Sunrise40,
     secondary = Forest40,
-    tertiary = Clay40,
+    tertiary = Evergreen40,
     background = Mist,
     surface = Linen,
     primaryContainer = ColorTokens.primaryContainerLight,
@@ -45,9 +46,9 @@ private val LightColorScheme = lightColorScheme(
     onPrimary = Card,
     onSecondary = Card,
     onTertiary = Card,
-    onBackground = Ink,
-    onSurface = Ink,
-    onSurfaceVariant = InkSoft,
+    onBackground = ColorTokens.onSurfaceLight,
+    onSurface = ColorTokens.onSurfaceLight,
+    onSurfaceVariant = ColorTokens.onSurfaceVariantLight,
     onPrimaryContainer = Ink,
     onSecondaryContainer = Ink,
     onTertiaryContainer = Ink,
@@ -66,9 +67,14 @@ private val RoutineShapes = Shapes(
 
 @Composable
 fun RoutineTrackerTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    themeMode: ThemeMode = ThemeMode.System,
     content: @Composable () -> Unit
 ) {
+    val darkTheme = when (themeMode) {
+        ThemeMode.System -> isSystemInDarkTheme()
+        ThemeMode.Light -> false
+        ThemeMode.Dark -> true
+    }
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
     MaterialTheme(
@@ -80,18 +86,20 @@ fun RoutineTrackerTheme(
 }
 
 private object ColorTokens {
-    val primaryContainerLight = Evergreen80.copy(alpha = 0.45f)
-    val secondaryContainerLight = Forest80.copy(alpha = 0.4f)
-    val tertiaryContainerLight = Sunrise80.copy(alpha = 0.45f)
+    val primaryContainerLight = Sunrise80.copy(alpha = 0.58f)
+    val secondaryContainerLight = LeafWash
+    val tertiaryContainerLight = Evergreen80.copy(alpha = 0.34f)
     val surfaceVariantLight = MorningBlue.copy(alpha = 0.75f)
+    val onSurfaceLight = Color(0xFF2D3834)
+    val onSurfaceVariantLight = Color(0xFF6B756F)
     val outlineLight = OutlineSoft
     val outlineVariantLight = OutlineSoft.copy(alpha = 0.72f)
-    val primaryContainerDark = Evergreen40.copy(alpha = 0.45f)
-    val secondaryContainerDark = Forest40.copy(alpha = 0.55f)
-    val tertiaryContainerDark = Clay40.copy(alpha = 0.55f)
-    val surfaceVariantDark = Color(0xFF2A3631)
-    val surfaceDark = Color(0xFF1E2824)
-    val onSurfaceVariantDark = Color(0xFFC4CFCA)
+    val primaryContainerDark = Sunrise40.copy(alpha = 0.5f)
+    val secondaryContainerDark = Evergreen40.copy(alpha = 0.5f)
+    val tertiaryContainerDark = Sky40.copy(alpha = 0.5f)
+    val surfaceVariantDark = Color(0xFF303731)
+    val surfaceDark = Color(0xFF252B26)
+    val onSurfaceVariantDark = Color(0xFFD6DDD6)
     val outlineDark = Color(0xFF53615B)
     val outlineVariantDark = Color(0xFF36443E)
 }

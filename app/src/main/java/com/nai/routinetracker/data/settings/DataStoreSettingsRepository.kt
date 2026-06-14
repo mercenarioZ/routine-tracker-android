@@ -6,9 +6,11 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.nai.routinetracker.di.SettingsDataStore
 import com.nai.routinetracker.domain.repository.SettingsRepository
 import com.nai.routinetracker.domain.settings.ReminderTime
+import com.nai.routinetracker.domain.settings.ThemeMode
 import com.nai.routinetracker.domain.settings.UserSettings
 import java.io.IOException
 import javax.inject.Inject
@@ -36,7 +38,8 @@ class DataStoreSettingsRepository @Inject constructor(
                     reminderTime = ReminderTime.fromMinutesFromMidnight(
                         preferences[REMINDER_TIME_MINUTES_KEY]
                             ?: ReminderTime.Default.minutesFromMidnight
-                    )
+                    ),
+                    themeMode = ThemeMode.fromStorageKey(preferences[THEME_MODE_KEY])
                 )
             }
     }
@@ -53,8 +56,15 @@ class DataStoreSettingsRepository @Inject constructor(
         }
     }
 
+    override suspend fun setThemeMode(themeMode: ThemeMode) {
+        dataStore.edit { preferences ->
+            preferences[THEME_MODE_KEY] = themeMode.storageKey
+        }
+    }
+
     private companion object {
         val REMINDER_ENABLED_KEY = booleanPreferencesKey("reminder_enabled")
         val REMINDER_TIME_MINUTES_KEY = intPreferencesKey("reminder_time_minutes")
+        val THEME_MODE_KEY = stringPreferencesKey("theme_mode")
     }
 }

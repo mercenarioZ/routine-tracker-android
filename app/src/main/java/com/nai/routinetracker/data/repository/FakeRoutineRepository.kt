@@ -5,6 +5,7 @@ import com.nai.routinetracker.domain.repository.TaskRepository
 import com.nai.routinetracker.model.RoutineCategory
 import com.nai.routinetracker.model.RoutineDashboardState
 import com.nai.routinetracker.model.RoutineItem
+import com.nai.routinetracker.model.RoutineRecurrence
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -28,6 +29,7 @@ class FakeRoutineRepository @Inject constructor(
         title: String,
         scheduleLabel: String,
         category: RoutineCategory,
+        recurrence: RoutineRecurrence,
         description: String
     ) {
         val routine = RoutineItem(
@@ -35,6 +37,7 @@ class FakeRoutineRepository @Inject constructor(
             title = title,
             scheduleLabel = scheduleLabel,
             category = category,
+            recurrence = recurrence,
             streakDays = 0,
             description = description
         )
