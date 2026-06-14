@@ -11,6 +11,7 @@ import com.nai.routinetracker.domain.repository.RoutineRepository
 import com.nai.routinetracker.model.RoutineCategory
 import com.nai.routinetracker.model.RoutineDashboardState
 import com.nai.routinetracker.model.RoutineItem
+import com.nai.routinetracker.model.RoutineRecurrence
 import com.nai.routinetracker.model.TaskItem
 import com.nai.routinetracker.model.TaskStatus
 import com.nai.routinetracker.model.toTaskCategory
@@ -56,6 +57,7 @@ class LocalRoutineRepository @Inject constructor(
         title: String,
         scheduleLabel: String,
         category: RoutineCategory,
+        recurrence: RoutineRecurrence,
         description: String
     ) {
         withContext(Dispatchers.IO) {
@@ -66,6 +68,7 @@ class LocalRoutineRepository @Inject constructor(
                     title = title,
                     scheduleLabel = scheduleLabel,
                     category = category,
+                    recurrence = recurrence,
                     streakDays = 0,
                     description = description
                 )

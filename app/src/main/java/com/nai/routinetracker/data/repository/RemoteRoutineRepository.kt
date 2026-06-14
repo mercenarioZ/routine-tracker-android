@@ -9,6 +9,7 @@ import com.nai.routinetracker.domain.repository.RoutineRepository
 import com.nai.routinetracker.domain.session.AuthSessionStore
 import com.nai.routinetracker.model.RoutineCategory
 import com.nai.routinetracker.model.RoutineDashboardState
+import com.nai.routinetracker.model.RoutineRecurrence
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -59,6 +60,7 @@ class RemoteRoutineRepository @Inject constructor(
         title: String,
         scheduleLabel: String,
         category: RoutineCategory,
+        recurrence: RoutineRecurrence,
         description: String
     ) {
         error("Creating routines is not wired to the backend yet")

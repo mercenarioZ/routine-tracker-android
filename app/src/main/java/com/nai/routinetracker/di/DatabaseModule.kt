@@ -24,7 +24,9 @@ object DatabaseModule {
             context,
             RoutineTrackerDatabase::class.java,
             "routine_tracker.db"
-        ).build()
+        )
+            .addMigrations(RoutineTrackerDatabase.MIGRATION_1_2)
+            .build()
     }
 
     @Provides
