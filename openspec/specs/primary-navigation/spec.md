@@ -19,3 +19,11 @@ The app SHALL keep non-primary routes out of the bottom bar without requiring th
 - **WHEN** the app defines a Stats destination
 - **THEN** Stats is not included in the primary bottom navigation list
 - **AND** the route can remain registered for future internal or deep-link usage
+
+### Requirement: Settings destination opens a functional experience
+The primary Settings destination SHALL open the functional settings experience.
+
+#### Scenario: User taps Settings tab
+- **WHEN** the user activates Settings from the primary bottom navigation
+- **THEN** the app navigates to the Settings route
+- **AND** the route displays editable settings and account actions instead of placeholder content
