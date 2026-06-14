@@ -2,6 +2,7 @@ package com.nai.routinetracker.data.settings
 
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import com.nai.routinetracker.domain.settings.ReminderTime
+import com.nai.routinetracker.domain.settings.ThemeMode
 import com.nai.routinetracker.domain.settings.UserSettings
 import java.io.File
 import java.nio.file.Files
@@ -55,6 +56,17 @@ class DataStoreSettingsRepositoryTest {
 
         assertTrue(settings.reminderEnabled)
         assertEquals(selectedTime, settings.reminderTime)
+    }
+
+    @Test
+    fun setThemeMode_persistsThemeMode() = runBlocking {
+        val repository = repositoryFor("theme.preferences_pb")
+
+        repository.setThemeMode(ThemeMode.Dark)
+
+        val settings = repository.observeSettings().first()
+
+        assertEquals(ThemeMode.Dark, settings.themeMode)
     }
 
     private fun repositoryFor(fileName: String): DataStoreSettingsRepository {

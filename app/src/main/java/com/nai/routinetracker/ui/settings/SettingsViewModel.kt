@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.nai.routinetracker.domain.repository.LocalDataRepository
 import com.nai.routinetracker.domain.repository.SettingsRepository
 import com.nai.routinetracker.domain.settings.ReminderTime
+import com.nai.routinetracker.domain.settings.ThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +29,7 @@ class SettingsViewModel @Inject constructor(
         SettingsUiState(
             reminderEnabled = settings.reminderEnabled,
             reminderTime = settings.reminderTime,
+            themeMode = settings.themeMode,
             isResettingLocalData = reset.isResetting,
             resetMessage = reset.message
         )
@@ -46,6 +48,12 @@ class SettingsViewModel @Inject constructor(
     fun onReminderTimeChanged(time: ReminderTime) {
         viewModelScope.launch {
             settingsRepository.setReminderTime(time)
+        }
+    }
+
+    fun onThemeModeChanged(themeMode: ThemeMode) {
+        viewModelScope.launch {
+            settingsRepository.setThemeMode(themeMode)
         }
     }
 

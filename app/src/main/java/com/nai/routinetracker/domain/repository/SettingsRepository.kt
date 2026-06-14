@@ -1,6 +1,7 @@
 package com.nai.routinetracker.domain.repository
 
 import com.nai.routinetracker.domain.settings.ReminderTime
+import com.nai.routinetracker.domain.settings.ThemeMode
 import com.nai.routinetracker.domain.settings.UserSettings
 import kotlinx.coroutines.flow.Flow
 
@@ -10,4 +11,6 @@ interface SettingsRepository {
     suspend fun setReminderEnabled(enabled: Boolean)
 
     suspend fun setReminderTime(time: ReminderTime)
+
+    suspend fun setThemeMode(themeMode: ThemeMode)
 }
