@@ -5,7 +5,7 @@ import com.nai.routinetracker.model.RoutineCategory
 
 data class CreateRoutineUiState(
     val title: String = "",
-    val scheduleLabel: String = "",
+    val scheduleLabel: String = DefaultRoutineScheduleLabel,
     val description: String = "",
     val selectedCategory: RoutineCategory = RoutineCategories.Health,
     val isSaving: Boolean = false,
@@ -20,3 +20,5 @@ data class CreateRoutineUiState(
             description.isNotBlank() &&
             !isSaving
 }
+
+const val DefaultRoutineScheduleLabel = "06:30 AM"

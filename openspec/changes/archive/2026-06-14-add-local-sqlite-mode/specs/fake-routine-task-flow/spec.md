@@ -1,9 +1,5 @@
-# fake-routine-task-flow Specification
+## MODIFIED Requirements
 
-## Purpose
-Defines backend-independent local repository behavior for creating routines, generating matching tasks, and preserving local app-flow state during testing without backend services.
-
-## Requirements
 ### Requirement: Fake routine creation updates local routine state
 The backend-independent local flow SHALL allow routine creation without backend routine-create support and SHALL persist the newly created routine in local SQLite storage before exposing it through the routine dashboard stream.
 

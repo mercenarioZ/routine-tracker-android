@@ -3,19 +3,23 @@ package com.nai.routinetracker.ui.routines
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,17 +43,7 @@ fun RoutinesScreen(
     onCreateRoutineClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        floatingActionButton = {
-            FloatingActionButton(onClick = onCreateRoutineClick) {
-                Icon(
-                    imageVector = Icons.Outlined.Add,
-                    contentDescription = stringResource(R.string.create_routine_title)
-                )
-            }
-        }
-    ) { innerPadding ->
+    Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
@@ -73,12 +67,27 @@ fun RoutinesScreen(
                     start = 20.dp,
                     top = 20.dp,
                     end = 20.dp,
-                    bottom = 92.dp
+                    bottom = 24.dp
                 ),
                 verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
                 item {
-                    RoutineHeader()
+                    RoutineHeader(
+                        action = {
+                            Button(
+                                onClick = onCreateRoutineClick,
+                                shape = MaterialTheme.shapes.medium,
+                                contentPadding = ButtonDefaults.ButtonWithIconContentPadding
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Add,
+                                    contentDescription = null
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(text = stringResource(R.string.routines_create_fab))
+                            }
+                        }
+                    )
                 }
 
                 item {

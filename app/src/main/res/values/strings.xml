@@ -67,6 +67,7 @@
     <string name="routines_empty_filtered_title">No routines in this category</string>
     <string name="routines_empty_filtered_body">Try another category or create a routine for this focus area.</string>
     <string name="routines_create_action">Create</string>
+    <string name="routines_create_fab">New routine</string>
     <string name="create_routine_title">Create a routine</string>
     <string name="create_routine_subtitle">Set up a repeatable action with a clear time and category.</string>
     <string name="create_routine_back">Back</string>
