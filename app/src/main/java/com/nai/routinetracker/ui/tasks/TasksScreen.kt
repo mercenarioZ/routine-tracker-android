@@ -89,7 +89,6 @@ fun TasksScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoutineVisualDefaults.CardShape,
-                    border = RoutineVisualDefaults.cardBorder(),
                     elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface
@@ -176,7 +175,6 @@ private fun TaskFlowSummary(state: TasksUiState) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoutineVisualDefaults.CardShape,
-        border = RoutineVisualDefaults.cardBorder(alpha = 0.28f),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
@@ -302,7 +300,6 @@ private fun EmptyState() {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoutineVisualDefaults.CardShape,
-        border = RoutineVisualDefaults.cardBorder(),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface

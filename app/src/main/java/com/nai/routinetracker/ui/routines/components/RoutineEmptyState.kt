@@ -33,7 +33,6 @@ fun EmptyState(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoutineVisualDefaults.CardShape,
-        border = RoutineVisualDefaults.cardBorder(),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface

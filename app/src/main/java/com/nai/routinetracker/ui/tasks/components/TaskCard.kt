@@ -71,7 +71,6 @@ fun TaskCard(
             .fillMaxWidth()
             .animateContentSize(),
         shape = RoutineVisualDefaults.CardShape,
-        border = RoutineVisualDefaults.cardBorder(),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         colors = CardDefaults.cardColors(containerColor = containerColor)
     ) {

@@ -63,8 +63,7 @@ fun HeaderSection(
                 .align(Alignment.TopEnd)
                 .offset(y = (-4).dp),
             shape = CircleShape,
-            color = MaterialTheme.colorScheme.surface,
-            border = RoutineVisualDefaults.cardBorder()
+            color = MaterialTheme.colorScheme.surface
         ) {
             IconButton(onClick = onLogoutClick) {
                 Icon(

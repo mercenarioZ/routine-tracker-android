@@ -1,6 +1,5 @@
 package com.nai.routinetracker.ui.theme
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -14,14 +13,6 @@ object RoutineVisualDefaults {
     val PillShape = CircleShape
     val ScreenHorizontalPadding = 20.dp
     val CardPadding = 16.dp
-
-    @Composable
-    fun cardBorder(alpha: Float = 0.72f): BorderStroke {
-        return BorderStroke(
-            width = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = alpha)
-        )
-    }
 
     @Composable
     fun categoryAccent(categoryId: String): Color {

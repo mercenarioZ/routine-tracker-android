@@ -1,6 +1,5 @@
 package com.nai.routinetracker.ui.settings
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -311,11 +310,7 @@ private fun SettingsSection(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(8.dp),
             color = MaterialTheme.colorScheme.surface,
-            tonalElevation = 1.dp,
-            border = BorderStroke(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outlineVariant
-            )
+            tonalElevation = 1.dp
         ) {
             Column(content = content)
         }
