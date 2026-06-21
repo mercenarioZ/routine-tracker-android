@@ -5,8 +5,11 @@ import com.nai.routinetracker.model.RoutineCategory
 import com.nai.routinetracker.model.RoutineItem
 import com.nai.routinetracker.model.RoutineRecurrence
 import com.nai.routinetracker.model.RoutineWeekday
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
@@ -84,6 +87,47 @@ data class RoutineDto(
             )
         }
     }
+}
+
+@Serializable
+data class RoutineCreateRequestDto(
+    val title: String,
+    val description: String?,
+    val frequency: String,
+    val startDate: String? = null
+) {
+    fun toJson(): String {
+        return RemoteJson.encodeToString(this)
+    }
+
+    companion object {
+        fun fromDomain(
+            title: String,
+            scheduleLabel: String,
+            category: RoutineCategory,
+            recurrence: RoutineRecurrence,
+            description: String
+        ): RoutineCreateRequestDto {
+            return RoutineCreateRequestDto(
+                title = title,
+                description = description.takeIf { it.isNotBlank() },
+                frequency = recurrence.toFrequencyValue(),
+                startDate = currentIsoDate()
+            )
+        }
+    }
+}
+
+private fun RoutineRecurrence.toFrequencyValue(): String {
+    return when (this) {
+        RoutineRecurrence.Daily -> "DAILY"
+        is RoutineRecurrence.Weekly -> "WEEKLY"
+        is RoutineRecurrence.Custom -> "CUSTOM"
+    }
+}
+
+private fun currentIsoDate(): String {
+    return SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
 }
 
 @Serializable

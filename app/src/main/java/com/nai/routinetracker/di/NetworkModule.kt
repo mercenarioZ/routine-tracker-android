@@ -3,6 +3,7 @@ package com.nai.routinetracker.di
 import com.nai.routinetracker.data.remote.ApiConfig
 import com.nai.routinetracker.data.remote.service.AuthService
 import com.nai.routinetracker.data.remote.service.RoutineService
+import com.nai.routinetracker.data.remote.service.TaskService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -50,5 +51,11 @@ object NetworkModule {
     @Singleton
     fun provideRoutineService(retrofit: Retrofit): RoutineService {
         return retrofit.create(RoutineService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTaskService(retrofit: Retrofit): TaskService {
+        return retrofit.create(TaskService::class.java)
     }
 }

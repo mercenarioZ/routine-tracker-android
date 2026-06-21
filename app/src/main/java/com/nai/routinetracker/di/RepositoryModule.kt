@@ -1,10 +1,10 @@
 package com.nai.routinetracker.di
 
 import com.nai.routinetracker.data.repository.AndroidFakeSeedStringProvider
-import com.nai.routinetracker.data.repository.FakeAuthRepository
 import com.nai.routinetracker.data.repository.FakeSeedStringProvider
-import com.nai.routinetracker.data.repository.LocalRoutineRepository
-import com.nai.routinetracker.data.repository.LocalTaskRepository
+import com.nai.routinetracker.data.repository.RemoteAuthRepository
+import com.nai.routinetracker.data.repository.RemoteRoutineRepository
+import com.nai.routinetracker.data.repository.RemoteTaskRepository
 import com.nai.routinetracker.data.repository.RoomLocalDataRepository
 import com.nai.routinetracker.data.settings.DataStoreSettingsRepository
 import com.nai.routinetracker.data.session.DataStoreAuthSessionStore
@@ -32,19 +32,19 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindAuthRepository(
-        fakeAuthRepository: FakeAuthRepository
+        remoteAuthRepository: RemoteAuthRepository
     ): AuthRepository
 
     @Binds
     @Singleton
     abstract fun bindRoutineRepository(
-        localRoutineRepository: LocalRoutineRepository
+        remoteRoutineRepository: RemoteRoutineRepository
     ): RoutineRepository
 
     @Binds
     @Singleton
     abstract fun bindTaskRepository(
-        localTaskRepository: LocalTaskRepository
+        remoteTaskRepository: RemoteTaskRepository
     ): TaskRepository
 
     @Binds

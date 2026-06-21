@@ -7,18 +7,25 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PATCH
 import retrofit2.http.POST
-import retrofit2.http.QueryMap
+import retrofit2.http.Path
 
-interface RoutineService {
-    @GET(ApiRoutes.Routines.LIST)
-    suspend fun getRoutines(
-        @QueryMap queryParameters: Map<String, String>,
+interface TaskService {
+    @GET(ApiRoutes.Tasks.LIST)
+    suspend fun getTasks(
         @Header("Authorization") authorizationHeader: String
     ): Response<ResponseBody>
 
-    @POST(ApiRoutes.Routines.LIST)
-    suspend fun createRoutine(
+    @POST(ApiRoutes.Tasks.LIST)
+    suspend fun createTask(
+        @Body body: RequestBody,
+        @Header("Authorization") authorizationHeader: String
+    ): Response<ResponseBody>
+
+    @PATCH(ApiRoutes.Tasks.COMPLETION)
+    suspend fun updateTaskCompletion(
+        @Path("taskId") taskId: String,
         @Body body: RequestBody,
         @Header("Authorization") authorizationHeader: String
     ): Response<ResponseBody>

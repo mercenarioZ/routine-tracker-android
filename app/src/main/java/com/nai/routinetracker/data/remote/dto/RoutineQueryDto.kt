@@ -1,9 +1,5 @@
 package com.nai.routinetracker.data.remote.dto
 
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-
 data class RoutineQueryDto(
     val search: String? = null,
     val fromDate: String? = null,
@@ -25,12 +21,11 @@ data class RoutineQueryDto(
     }
 
     companion object {
-        fun activeForToday(): RoutineQueryDto {
-            val today = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+        fun activeRoutines(): RoutineQueryDto {
             return RoutineQueryDto(
-                fromDate = today,
-                toDate = today,
-                isActive = true
+                isActive = true,
+                sortBy = "created_at",
+                sortDirection = "desc"
             )
         }
     }
