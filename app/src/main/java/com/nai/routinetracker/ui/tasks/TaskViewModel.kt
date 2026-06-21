@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -25,7 +26,9 @@ class TaskViewModel @Inject constructor(
 
     fun onToggleTask(taskId: String) {
         viewModelScope.launch {
-            repository.toggleTask(taskId)
+            runCatching {
+                repository.toggleTask(taskId)
+            }
         }
     }
 
@@ -39,14 +42,20 @@ class TaskViewModel @Inject constructor(
 
     private fun observeTasks() {
         viewModelScope.launch {
-            repository.observeTasks().collectLatest { tasks ->
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        tasks = tasks
-                    )
+            repository.observeTasks()
+                .catch {
+                    _uiState.update { currentState ->
+                        currentState.copy(isLoading = false)
+                    }
                 }
-            }
+                .collectLatest { tasks ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            tasks = tasks
+                        )
+                    }
+                }
         }
     }
 }

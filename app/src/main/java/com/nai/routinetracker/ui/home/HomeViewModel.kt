@@ -37,13 +37,16 @@ class HomeViewModel @Inject constructor(
         val newStatus = task.status.next()
 
         viewModelScope.launch {
-            taskRepository.toggleTask(taskId)
-            _effects.emit(
-                HomeEffect.ShowTaskStatusChanged(
-                    taskTitle = task.title,
-                    newStatus = newStatus
+            runCatching {
+                taskRepository.toggleTask(taskId)
+            }.onSuccess {
+                _effects.emit(
+                    HomeEffect.ShowTaskStatusChanged(
+                        taskTitle = task.title,
+                        newStatus = newStatus
+                    )
                 )
-            )
+            }
         }
     }
 
@@ -65,14 +68,20 @@ class HomeViewModel @Inject constructor(
 
     private fun observeTasks() {
         viewModelScope.launch {
-            taskRepository.observeTasks().collectLatest { tasks ->
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        tasks = tasks
-                    )
+            taskRepository.observeTasks()
+                .catch {
+                    _uiState.update { currentState ->
+                        currentState.copy(isLoading = false)
+                    }
                 }
-            }
+                .collectLatest { tasks ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            tasks = tasks
+                        )
+                    }
+                }
         }
     }
 }

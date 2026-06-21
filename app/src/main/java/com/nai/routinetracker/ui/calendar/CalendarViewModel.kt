@@ -50,7 +50,9 @@ class CalendarViewModel @Inject constructor(
 
     fun onToggleTask(taskId: String) {
         viewModelScope.launch {
-            taskRepository.toggleTask(taskId)
+            runCatching {
+                taskRepository.toggleTask(taskId)
+            }
         }
     }
 
