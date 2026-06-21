@@ -285,7 +285,6 @@ private fun DayCell(
             )
             ActivityDots(
                 taskCount = day.taskCount,
-                routineCount = day.routineCount,
                 isMuted = !day.isInVisibleMonth
             )
         }
@@ -295,21 +294,12 @@ private fun DayCell(
 @Composable
 private fun ActivityDots(
     taskCount: Int,
-    routineCount: Int,
     isMuted: Boolean
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(3.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (routineCount > 0) {
-            Box(
-                modifier = Modifier
-                    .size(5.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.secondary.copy(alpha = if (isMuted) 0.3f else 1f))
-            )
-        }
         if (taskCount > 0) {
             Box(
                 modifier = Modifier
