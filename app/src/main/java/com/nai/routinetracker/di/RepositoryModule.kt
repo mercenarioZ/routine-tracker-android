@@ -5,11 +5,9 @@ import com.nai.routinetracker.data.repository.FakeSeedStringProvider
 import com.nai.routinetracker.data.repository.RemoteAuthRepository
 import com.nai.routinetracker.data.repository.RemoteRoutineRepository
 import com.nai.routinetracker.data.repository.RemoteTaskRepository
-import com.nai.routinetracker.data.repository.RoomLocalDataRepository
 import com.nai.routinetracker.data.settings.DataStoreSettingsRepository
 import com.nai.routinetracker.data.session.DataStoreAuthSessionStore
 import com.nai.routinetracker.domain.repository.AuthRepository
-import com.nai.routinetracker.domain.repository.LocalDataRepository
 import com.nai.routinetracker.domain.repository.RoutineRepository
 import com.nai.routinetracker.domain.repository.SettingsRepository
 import com.nai.routinetracker.domain.repository.TaskRepository
@@ -52,12 +50,6 @@ abstract class RepositoryModule {
     abstract fun bindSettingsRepository(
         dataStoreSettingsRepository: DataStoreSettingsRepository
     ): SettingsRepository
-
-    @Binds
-    @Singleton
-    abstract fun bindLocalDataRepository(
-        roomLocalDataRepository: RoomLocalDataRepository
-    ): LocalDataRepository
 
     @Binds
     @Singleton

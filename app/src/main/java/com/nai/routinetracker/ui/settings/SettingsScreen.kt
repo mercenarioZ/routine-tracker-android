@@ -22,12 +22,7 @@ import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Palette
-import androidx.compose.material.icons.outlined.RestartAlt
-import androidx.compose.material.icons.outlined.Storage
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -62,13 +57,11 @@ fun SettingsScreen(
     onReminderEnabledChanged: (Boolean) -> Unit,
     onReminderTimeChanged: (ReminderTime) -> Unit,
     onThemeModeChanged: (ThemeMode) -> Unit,
-    onResetLocalDataConfirmed: () -> Unit,
     onSignOutClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showReminderTimeDialog by rememberSaveable { mutableStateOf(false) }
     var showThemeModeDialog by rememberSaveable { mutableStateOf(false) }
-    var showResetDialog by rememberSaveable { mutableStateOf(false) }
 
     Surface(
         modifier = modifier.fillMaxSize(),
@@ -132,76 +125,6 @@ fun SettingsScreen(
 
             item {
                 SettingsSection(
-                    title = stringResource(R.string.settings_local_data_section),
-                    icon = Icons.Outlined.Storage
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.settings_reset_data_title),
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            text = stringResource(R.string.settings_reset_data_body),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        state.resetMessage?.let { resetMessage ->
-                            Text(
-                                text = stringResource(
-                                    when (resetMessage) {
-                                        SettingsResetMessage.Success -> {
-                                            R.string.settings_reset_success
-                                        }
-                                        SettingsResetMessage.Error -> {
-                                            R.string.settings_reset_error
-                                        }
-                                    }
-                                ),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = when (resetMessage) {
-                                    SettingsResetMessage.Success -> {
-                                        MaterialTheme.colorScheme.primary
-                                    }
-                                    SettingsResetMessage.Error -> {
-                                        MaterialTheme.colorScheme.error
-                                    }
-                                }
-                            )
-                        }
-                        Button(
-                            onClick = { showResetDialog = true },
-                            enabled = !state.isResettingLocalData,
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.error,
-                                contentColor = MaterialTheme.colorScheme.onError
-                            )
-                        ) {
-                            if (state.isResettingLocalData) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(18.dp),
-                                    color = MaterialTheme.colorScheme.onError,
-                                    strokeWidth = 2.dp
-                                )
-                            } else {
-                                Icon(
-                                    imageVector = Icons.Outlined.RestartAlt,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(18.dp)
-                                )
-                            }
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(text = stringResource(R.string.settings_reset_data_action))
-                        }
-                    }
-                }
-            }
-
-            item {
-                SettingsSection(
                     title = stringResource(R.string.settings_app_info_section),
                     icon = Icons.Outlined.Info
                 ) {
@@ -257,18 +180,6 @@ fun SettingsScreen(
             },
             onDismiss = {
                 showReminderTimeDialog = false
-            }
-        )
-    }
-
-    if (showResetDialog) {
-        ResetLocalDataDialog(
-            onConfirm = {
-                showResetDialog = false
-                onResetLocalDataConfirmed()
-            },
-            onDismiss = {
-                showResetDialog = false
             }
         )
     }
@@ -491,38 +402,6 @@ private fun ThemeModeDialog(
 }
 
 @Composable
-private fun ResetLocalDataDialog(
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            Text(text = stringResource(R.string.settings_reset_confirm_title))
-        },
-        text = {
-            Text(text = stringResource(R.string.settings_reset_confirm_body))
-        },
-        confirmButton = {
-            Button(
-                onClick = onConfirm,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.error,
-                    contentColor = MaterialTheme.colorScheme.onError
-                )
-            ) {
-                Text(text = stringResource(R.string.settings_reset_confirm_action))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(text = stringResource(R.string.settings_reset_cancel_action))
-            }
-        }
-    )
-}
-
-@Composable
 private fun ThemeMode.formatForDisplay(): String {
     return stringResource(
         when (this) {
@@ -562,7 +441,6 @@ private fun SettingsScreenPreview() {
             onReminderEnabledChanged = {},
             onReminderTimeChanged = {},
             onThemeModeChanged = {},
-            onResetLocalDataConfirmed = {},
             onSignOutClick = {}
         )
     }

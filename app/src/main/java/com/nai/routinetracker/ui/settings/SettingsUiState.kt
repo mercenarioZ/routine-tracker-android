@@ -6,12 +6,5 @@ import com.nai.routinetracker.domain.settings.ThemeMode
 data class SettingsUiState(
     val reminderEnabled: Boolean = false,
     val reminderTime: ReminderTime = ReminderTime.Default,
-    val themeMode: ThemeMode = ThemeMode.System,
-    val isResettingLocalData: Boolean = false,
-    val resetMessage: SettingsResetMessage? = null
+    val themeMode: ThemeMode = ThemeMode.System
 )
-
-enum class SettingsResetMessage {
-    Success,
-    Error
-}
