@@ -3,7 +3,7 @@ package com.nai.routinetracker.data.remote
 import com.nai.routinetracker.BuildConfig
 
 object ApiConfig {
-    val BASE_URL: String = BuildConfig.API_BASE_URL
+    const val BASE_URL: String = BuildConfig.API_BASE_URL
 
     const val TIMEOUT_MILLIS = 15_000L
 }
