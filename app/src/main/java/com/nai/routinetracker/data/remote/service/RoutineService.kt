@@ -6,7 +6,6 @@ import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.QueryMap
 
@@ -14,12 +13,10 @@ interface RoutineService {
     @GET(ApiRoutes.Routines.LIST)
     suspend fun getRoutines(
         @QueryMap queryParameters: Map<String, String>,
-        @Header("Authorization") authorizationHeader: String
     ): Response<ResponseBody>
 
     @POST(ApiRoutes.Routines.LIST)
     suspend fun createRoutine(
         @Body body: RequestBody,
-        @Header("Authorization") authorizationHeader: String
     ): Response<ResponseBody>
 }

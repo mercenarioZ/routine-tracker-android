@@ -13,21 +13,17 @@ class RoutineApi @Inject constructor(
 ) {
     suspend fun getRoutines(
         query: RoutineQueryDto,
-        authorizationHeader: String
     ): ApiResponseDto<List<RoutineDto>> {
         return service.getRoutines(
             queryParameters = query.toQueryParameters(),
-            authorizationHeader = authorizationHeader
         ).parseApiResponse(RoutineDto::listFromJsonValue)
     }
 
     suspend fun createRoutine(
         request: RoutineCreateRequestDto,
-        authorizationHeader: String
     ): ApiResponseDto<RoutineDto> {
         return service.createRoutine(
             body = request.toJson().toJsonRequestBody(),
-            authorizationHeader = authorizationHeader
         ).parseApiResponse { value ->
             value.jsonObjectOrNull()?.let(RoutineDto::fromJson)
         }

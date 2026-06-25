@@ -1,6 +1,7 @@
 package com.nai.routinetracker.di
 
 import com.nai.routinetracker.data.remote.ApiConfig
+import com.nai.routinetracker.data.remote.AuthInterceptor
 import com.nai.routinetracker.data.remote.service.AuthService
 import com.nai.routinetracker.data.remote.service.RoutineService
 import com.nai.routinetracker.data.remote.service.TaskService
@@ -18,10 +19,11 @@ import retrofit2.Retrofit
 object NetworkModule {
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
             .connectTimeout(ApiConfig.TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
             .readTimeout(ApiConfig.TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
+            .addInterceptor(authInterceptor)
             .addInterceptor { chain ->
                 val request = chain.request()
                     .newBuilder()

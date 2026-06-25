@@ -2,13 +2,10 @@ package com.nai.routinetracker.data.repository
 
 import android.content.Context
 import com.nai.routinetracker.R
-import com.nai.routinetracker.data.remote.ApiException
 import com.nai.routinetracker.data.remote.RoutineApi
 import com.nai.routinetracker.data.remote.dto.RoutineCreateRequestDto
 import com.nai.routinetracker.data.remote.dto.RoutineQueryDto
 import com.nai.routinetracker.domain.repository.RoutineRepository
-import com.nai.routinetracker.domain.session.AuthSessionStore
-import com.nai.routinetracker.domain.session.AuthSession
 import com.nai.routinetracker.model.RoutineCategory
 import com.nai.routinetracker.model.RoutineDashboardState
 import com.nai.routinetracker.model.RoutineRecurrence
@@ -21,7 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
@@ -29,7 +25,6 @@ import kotlinx.coroutines.withContext
 class RemoteRoutineRepository @Inject constructor(
     @ApplicationContext context: Context,
     private val routineApi: RoutineApi,
-    private val authSessionStore: AuthSessionStore
 ) : RoutineRepository {
     private val appContext = context.applicationContext
     private val dashboardState = MutableStateFlow(emptyDashboardState())
@@ -57,7 +52,6 @@ class RemoteRoutineRepository @Inject constructor(
                     recurrence = recurrence,
                     description = description
                 ),
-                authorizationHeader = activeSession().authorizationHeader
             )
 
             if (response.success == false) {
@@ -71,7 +65,6 @@ class RemoteRoutineRepository @Inject constructor(
     private suspend fun refreshDashboard() {
         val response = routineApi.getRoutines(
             query = RoutineQueryDto.activeRoutines(),
-            authorizationHeader = activeSession().authorizationHeader
         )
 
         if (response.success == false) {
@@ -84,14 +77,6 @@ class RemoteRoutineRepository @Inject constructor(
             highlight = appContext.getString(R.string.home_highlight),
             routines = response.data.orEmpty().map { it.toDomain() }
         )
-    }
-
-    private suspend fun activeSession(): AuthSession {
-        return authSessionStore.observeSession().first()
-            ?: throw ApiException(
-                statusCode = 401,
-                message = "Please log in again"
-            )
     }
 
     private fun emptyDashboardState(): RoutineDashboardState {

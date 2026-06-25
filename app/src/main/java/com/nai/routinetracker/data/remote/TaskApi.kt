@@ -11,22 +11,15 @@ import javax.inject.Inject
 class TaskApi @Inject constructor(
     private val service: TaskService
 ) {
-    suspend fun getTasks(
-        authorizationHeader: String
-    ): ApiResponseDto<List<TaskDto>> {
-        return service.getTasks(
-            authorizationHeader = authorizationHeader
-        ).parseApiResponse(TaskDto::listFromJsonValue)
+    suspend fun getTasks(): ApiResponseDto<List<TaskDto>> {
+        return service.getTasks().parseApiResponse(TaskDto::listFromJsonValue)
     }
 
     suspend fun createTask(
         request: TaskCreateRequestDto,
-        authorizationHeader: String
     ): ApiResponseDto<TaskDto> {
         return service.createTask(
-            body = request.toJson().toJsonRequestBody(),
-            authorizationHeader = authorizationHeader
-        ).parseApiResponse { value ->
+            body = request.toJson().toJsonRequestBody()).parseApiResponse { value ->
             value.jsonObjectOrNull()?.let(TaskDto::fromJson)
         }
     }
@@ -34,13 +27,10 @@ class TaskApi @Inject constructor(
     suspend fun updateTaskCompletion(
         taskId: String,
         request: TaskUpdateRequestDto,
-        authorizationHeader: String
     ): ApiResponseDto<TaskDto> {
         return service.updateTaskCompletion(
             taskId = taskId,
-            body = request.toJson().toJsonRequestBody(),
-            authorizationHeader = authorizationHeader
-        ).parseApiResponse { value ->
+            body = request.toJson().toJsonRequestBody()).parseApiResponse { value ->
             value.jsonObjectOrNull()?.let(TaskDto::fromJson)
         }
     }

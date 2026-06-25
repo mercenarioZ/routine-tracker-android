@@ -10,6 +10,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.stringResource
@@ -58,6 +59,17 @@ fun AppNavHost(
         navController.navigate(AppDestination.Login.route) {
             popUpTo(navController.graph.id) { inclusive = true }
             launchSingleTop = true
+        }
+    }
+
+    LaunchedEffect(authUiState.isLoggedIn, currentDestination?.route) {
+        val currentRoute = currentDestination?.route
+
+        if (!authUiState.isLoggedIn && currentRoute != null && currentRoute != AppDestination.Login.route) {
+            navController.navigate(AppDestination.Login.route) {
+                popUpTo(navController.graph.id) { inclusive = true }
+                launchSingleTop = true
+            }
         }
     }
 
