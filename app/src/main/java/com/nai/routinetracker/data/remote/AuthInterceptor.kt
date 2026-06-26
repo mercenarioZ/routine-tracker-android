@@ -7,9 +7,6 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject
 
-private const val AUTHORIZATION_HEADER = "Authorization"
-private const val HTTP_UNAUTHORIZED_CODE = 401
-
 class AuthInterceptor @Inject constructor(
     private val authSessionStore: AuthSessionStore
 ) : Interceptor {
@@ -19,26 +16,15 @@ class AuthInterceptor @Inject constructor(
             authSessionStore.observeSession().first()
         }
 
-        val req = if (session != null && originalRequest.header(AUTHORIZATION_HEADER) == null) {
-            originalRequest.newBuilder()
-                .header(AUTHORIZATION_HEADER, session.authorizationHeader)
-                .build()
+        val request = if (
+            session != null && originalRequest.header(AUTHORIZATION_HEADER) == null &&
+            originalRequest.isProtectedAuthRequest()
+        ) {
+            originalRequest.withAuthorizationHeader(session)
         } else {
             originalRequest
         }
 
-        val res = chain.proceed(req)
-
-        if (res.code == HTTP_UNAUTHORIZED_CODE && originalRequest.isProtectedRequest()) {
-            runBlocking {
-                authSessionStore.clearSession()
-            }
-        }
-
-        return res
-    }
-
-    private fun okhttp3.Request.isProtectedRequest(): Boolean {
-        return !url.encodedPath.endsWith("/${ApiRoutes.Auth.LOGIN}")
+        return chain.proceed(request)
     }
 }

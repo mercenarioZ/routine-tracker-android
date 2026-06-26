@@ -11,6 +11,7 @@ object ApiConfig {
 object ApiRoutes {
     object Auth {
         const val LOGIN = "auth/login"
+        const val REFRESH = "auth/refresh"
     }
 
     object Routines {

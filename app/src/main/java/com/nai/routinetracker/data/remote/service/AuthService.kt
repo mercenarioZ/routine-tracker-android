@@ -12,4 +12,9 @@ interface AuthService {
     suspend fun login(
         @Body body: RequestBody
     ): Response<ResponseBody>
+
+    @POST(ApiRoutes.Auth.REFRESH)
+    suspend fun refresh(
+        @Body body: RequestBody
+    ): Response<ResponseBody>
 }
